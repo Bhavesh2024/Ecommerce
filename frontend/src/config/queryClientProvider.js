@@ -13,3 +13,5 @@ export function QueryClientProviderWrapper({ children }) {
 		</QueryClientProvider>
 	);
 }
+
+export { queryClient };
