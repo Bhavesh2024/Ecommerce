@@ -31,3 +31,6 @@ pnpm-debug.log*
 # miscellaneous
 .next/cache
 *.local
+
+upload
+uploads

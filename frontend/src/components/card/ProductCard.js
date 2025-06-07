@@ -1,65 +1,41 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import Modal from "../modal/Modal";
 
 const ProductCard = ({ product, showViewMore = true }) => {
-	const getPriceValue = (price) => {
-		if (typeof price === "object") {
-			const firstKey = Object.keys(price)[0];
-			return price[firstKey];
-		}
-		return price;
-	};
 	const router = useRouter();
-	const singlePrice = getPriceValue(product?.price?.single);
-	const couplePrice = getPriceValue(product?.price?.couple);
-
+	if (!product.status) return;
 	return (
 		<div
-			className="max-w-xs bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300 border border-gray-400"
-			onClick={() => router.push(`/product/${product.id}`)}
-		>
+			className='max-w-xs bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300 border border-gray-400'
+			onClick={() => router.push(`/product/${product.slug}`)}>
 			<img
-				src={`/images/product/${product.images[0]}`}
+				src={`${product.thumbnail || product.images[0].url}`}
 				alt={product.title}
-				className="w-full h-56 object-cover"
+				className='w-full h-48 object-fill'
 			/>
-			<div className="p-4">
-				<h2 className="text-lg font-semibold text-gray-800 truncate">
+			<div className='mt-2 flex justify-between items-center px-3 pt-1'>
+				<h2 className='text-lg font-semibold text-gray-800 truncate'>
 					{product.title}
 				</h2>
-				<p className="text-sm text-gray-600 mt-1">
+				<p className='text-sm text-gray-700'>
+					<span className='font-medium'>Price:</span> ₹
+					{product.price}
+				</p>
+			</div>
+			<div className='px-3 py-1'>
+				<p className='text-sm text-gray-600 mt-1'>
 					{product.description.length > 50
 						? `${product.description.slice(0, 50)}...`
 						: product.description}
 				</p>
 
-				<div className="mt-2 flex justify-between items-center">
-					<p className="text-sm text-gray-700">
-						<span className="font-medium">Single:</span> ₹
-						{singlePrice}
-					</p>
-					<p className="text-sm text-gray-700">
-						<span className="font-medium">Couple:</span> ₹
-						{couplePrice}
-					</p>
-				</div>
-
-				{/* <p
-					className={`text-sm font-semibold mt-2 ${
-						product.stock === "In Stock"
-							? "text-green-600"
-							: "text-red-500"
-					}`}
-				>
-					{product.stock}
-				</p> */}
 				{showViewMore && (
-					<div className="flex justify-end items-center mt-3">
+					<div className='flex justify-end items-center mt-3 mb-1'>
 						<a
-							href={`/product/${product.id}`}
-							className="text-sm text-sky-600 hover:underline"
-						>
+							href={`/product/${product.slug}`}
+							className='text-sm text-sky-600 hover:underline'>
 							View More
 						</a>
 					</div>
