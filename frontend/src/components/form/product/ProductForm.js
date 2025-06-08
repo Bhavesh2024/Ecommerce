@@ -47,8 +47,8 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 	} = useMutation({
 		mutationFn: handleProduct,
 		onSuccess: function (response) {
-			if (Array.isArray(response?.files)) {
-				setResponseImages(response?.files);
+			if (Array.isArray(response) && response.length > 0) {
+				setResponseImages(response);
 			} else {
 				showSuccess(response.message);
 				setTimeout(() => {
