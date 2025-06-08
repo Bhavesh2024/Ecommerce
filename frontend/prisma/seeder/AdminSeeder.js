@@ -29,7 +29,7 @@ const createAdmin = async () => {
 		);
 
 		const hashedPassword = await bcrypt.hash(passwordInput, 10);
-		const birthdate = new Date(birthdateInput);
+		const birthdate = new Date(birthdateInput).toISOString();
 
 		const user = await prisma.user.create({
 			data: {
@@ -40,7 +40,7 @@ const createAdmin = async () => {
 				role,
 				agreeTerms: true,
 				gender,
-				birthdate,
+				birthDate: birthdate,
 			},
 		});
 
