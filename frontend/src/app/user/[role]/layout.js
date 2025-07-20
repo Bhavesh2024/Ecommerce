@@ -5,29 +5,23 @@ import PageLoader from "@/components/loader/PageLoader";
 import NotFound from "@/components/not-found/NotFound";
 import { handleAuth } from "@/utils/api/authApi";
 import { useMutation } from "@tanstack/react-query";
-import { X, LogOut } from "lucide-react";
-import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
 	useAdminStoreActions,
 	useAdminStoreState,
 } from "@/hooks/store/useAdminStore";
 import { initFCM } from "@/hooks/notification/usePushNotification";
-import { defaultImage } from "@/utils/helper/web-content";
-import { renderUserActivities } from "@/utils/helper/sidebar";
 import AdminNav from "@/layout/navbar/AdminNav";
 import { handleNotification } from "@/utils/api/notificationApi";
 import Sidebar from "@/layout/sidebar/Sidebar";
 
 const UserLayout = ({ children }) => {
 	const [sidebar, setSidebar] = useState(false);
-	// const [openDropdown, setOpenDropdown] = useState(false);
-	// const dropdownRef = useRef(0);
 	const router = useRouter();
 	const path = usePathname();
 	const { role } = useParams();
-	// const [toggleNotification, setToggleNotification] = useState(false);
+
 	const layoutRestrictedRoutesList = [
 		`/user/${role}/auth/signup`,
 		`/user/${role}/auth/login`,
@@ -38,6 +32,7 @@ const UserLayout = ({ children }) => {
 	const isForgotPasswordRoute = path.startsWith(
 		`/user/${role}/auth/forgot-password`,
 	);
+
 	const isProtected = useMemo(() => {
 		if (
 			isForgotPasswordRoute ||
@@ -46,6 +41,7 @@ const UserLayout = ({ children }) => {
 			return false;
 		return true;
 	}, [path]);
+
 	const { user } = useAdminStoreState();
 	const { setValue } = useAdminStoreActions();
 	const { data, isLoading, isSuccess, isError } = useAuth(
