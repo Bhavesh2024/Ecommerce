@@ -63,7 +63,15 @@ export async function GET(req) {
 				);
 			}
 		}
-
+		if (
+			!allProducts ||
+			(Array.isArray(allProducts) && allProducts.length == 0)
+		) {
+			return NextResponse.json(
+				{ message: "No Product Found" },
+				{ status: 404 },
+			);
+		}
 		return NextResponse.json(
 			{
 				message: "Products Found Successfully",

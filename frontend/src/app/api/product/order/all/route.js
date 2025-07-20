@@ -79,8 +79,12 @@ export async function GET(req) {
 				},
 			});
 		}
-		console.log(orders);
-
+		if (!orders || (Array.isArray(orders) && orders.length == 0)) {
+			return NextResponse.json(
+				{ message: "No Orders Found" },
+				{ status: 404 },
+			);
+		}
 		const extractedOrders = orders.map((order) => ({
 			id: order.id,
 			orderId: order.orderId,
@@ -91,6 +95,9 @@ export async function GET(req) {
 			address: order.shippingAddress,
 			product: order.product,
 			user: order.user,
+			quantity: order.quantity,
+			created_at: order.createdAt,
+			updated_at: order.updatedAt,
 		}));
 
 		return NextResponse.json(

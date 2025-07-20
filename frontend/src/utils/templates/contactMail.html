@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Contact Request Received</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background: #f3f4f6;
+				font-family: Arial, sans-serif;
+				color: #1f2937;
+			}
+			.container {
+				max-width: 600px;
+				margin: 20px auto;
+				background: #fff;
+				border-radius: 10px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+				border-top: 5px solid #7c3aed;
+			}
+			.header {
+				padding: 10px;
+			}
+			.header img {
+				height: 50px;
+				border-radius: 100%;
+				width: 50px;
+			}
+			.title {
+				font-size: 20px;
+				color: #7c3aed;
+				margin-top: 10px;
+			}
+			.content {
+				padding: 20px;
+			}
+			.info {
+				background: #f3f4f6;
+				border-radius: 6px;
+				padding: 15px;
+				margin-bottom: 20px;
+			}
+			.info p {
+				margin: 8px 0;
+				font-size: 15px;
+				color: #374151;
+			}
+			.info strong {
+				color: #111827;
+			}
+			.message-box {
+				background: #f3e8ff;
+				border: 2px dashed #7c3aed;
+				padding: 15px;
+				border-radius: 6px;
+				color: #4b5563;
+				font-size: 15px;
+			}
+			.footer {
+				font-size: 12px;
+				color: #6b7280;
+				padding: 15px 20px;
+				text-align: center;
+				background: #f9fafb;
+			}
+			.hidden {
+				display: none;
+			}
+			@media (max-width: 600px) {
+				.container {
+					margin: 10px;
+				}
+				.title {
+					font-size: 18px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<img
+					src="{{logo}}"
+					alt="Upsquare Art Logo" />
+			</div>
+			<div class="content">
+				<div class="info">
+					<p><strong>Name:</strong> {{name}}</p>
+					<p><strong>Email:</strong> {{email}}</p>
+					<p class="{{phoneDisplayClass}}">
+						<strong>Phone:</strong> {{phone}}
+					</p>
+				</div>
+				<div class="message-box">
+					<strong>Message:</strong><br />
+					{{message}}
+				</div>
+			</div>
+			<div class="footer">
+				&copy; {{year}} Upsquare Art. All rights reserved.
+			</div>
+		</div>
+	</body>
+</html>

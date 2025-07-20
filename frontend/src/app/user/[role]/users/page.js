@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/components/header/Header";
 import PageLoader from "@/components/loader/PageLoader";
 import Alert from "@/components/modal/alert/Alert";
 import Modal from "@/components/modal/Modal";
@@ -14,6 +15,7 @@ import { usePopupMessage } from "@/hooks/usePopupMessage";
 import { useUser } from "@/hooks/useUser";
 import { handleUser } from "@/utils/api/userApi";
 import { useMutation } from "@tanstack/react-query";
+import { format, formatDate } from "date-fns";
 import { Users as People } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
@@ -23,8 +25,16 @@ const Users = () => {
 	const { addAllItem, deleteItem } = useAdminStoreActions();
 	const [id, setId] = useState(null);
 	const [alert, setAlert] = useState(false);
-	const { isOpen, closePopup, message, showError, showSuccess, type } =
-		usePopupMessage();
+	const {
+		isOpen,
+		closePopup,
+		message,
+		showError,
+		showSuccess,
+		type,
+		startLoading,
+		loading,
+	} = usePopupMessage();
 
 	const { mutate: removeUserMutation } = useMutation({
 		mutationFn: handleUser,
@@ -57,6 +67,7 @@ const Users = () => {
 
 	const handleDelete = () => {
 		setAlert(false);
+		startLoading();
 		removeUserMutation({ method: "delete", type: "remove", id: id });
 	};
 	const userData = [
@@ -86,6 +97,7 @@ const Users = () => {
 		{
 			key: "birthDate",
 			name: "Birth Date",
+			render: (val) => format(new Date(val), "dd MMM yyyy"),
 		},
 		{
 			key: "gender",
@@ -110,21 +122,29 @@ const Users = () => {
 				<NoItem
 					message={"No User Found"}
 					icon={
-						<People className='size-16 text-gray-500' />
+						<People className='size-16 text-purple-500' />
 					}
 				/>
 			)}
 			{isSuccess && users && (
 				<>
-					<div className='w-full px-2 mt-4'>
-						<DataTable
-							data={userData}
-							values={users}
-							enablePagination={true}
-							onDelete={(user) =>
-								handleConfirmDelete(user.id)
-							}
+					<div className='flex flex-col gap-2 w-11/12 mx-auto'>
+						<Header
+							title='User'
+							enableBtn={false}
 						/>
+						<div className='w-full px-2 mt-4'>
+							<DataTable
+								data={userData}
+								values={users}
+								enablePagination={true}
+								onDelete={(user) =>
+									handleConfirmDelete(
+										user.id,
+									)
+								}
+							/>
+						</div>
 					</div>
 				</>
 			)}
@@ -141,13 +161,16 @@ const Users = () => {
 				/>
 			</Modal>
 			<Modal
-				open={isOpen}
+				open={loading || isOpen}
 				onClose={closePopup}>
-				<Response
-					message={message}
-					onClose={closePopup}
-					type={type}
-				/>
+				{loading && <PageLoader />}
+				{isOpen && (
+					<Response
+						message={message}
+						onClose={closePopup}
+						type={type}
+					/>
+				)}
 			</Modal>
 		</>
 	);

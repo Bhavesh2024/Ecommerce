@@ -12,6 +12,10 @@ export const handleAuth = async ({
 			register: "/register",
 			login: "/login",
 			logout: "/logout",
+			logout: "/logout",
+			verification: "/verification",
+			otpVerification: "/code-verification",
+			resetPassword: "/reset-password",
 		};
 		const endpoint = baseEndpoint + endpoints[type];
 		const response = data

@@ -1,20 +1,28 @@
 // store/useAdminStore.js
 import { create } from "zustand";
 
-const useAdminStore = create((set) => ({
-	// Predefined entities
+const initialState = {
 	products: [],
 	users: [],
 	orders: [],
 	inventory: [],
 	user: null,
+	payments: [],
+	refunds: [],
+	notifications: [], // Add notifications to initial state
+};
+
+const useAdminStore = create((set) => ({
+	...initialState,
 
 	// Add a new item to an entity
 	addItem: (key, newItem) =>
 		set((state) => ({
 			[key]: [...state[key], newItem],
 		})),
+
 	addAllItem: (key, items) => set(() => ({ [key]: items })),
+
 	// Update an item in an entity
 	updateItem: (key, updatedItem) =>
 		set((state) => ({
@@ -34,7 +42,9 @@ const useAdminStore = create((set) => ({
 		set((state) => ({
 			[key]: [],
 		})),
+
 	setValue: (key, value) => set({ [key]: value }),
+
 	clearValue: (key) =>
 		set({ [key]: Array.isArray(initialState[key]) ? [] : null }),
 }));
@@ -65,6 +75,18 @@ export const useAdminStoreState = () => {
 	const orders = useAdminStore((state) => state.orders);
 	const inventory = useAdminStore((state) => state.inventory);
 	const user = useAdminStore((state) => state.user);
+	const payments = useAdminStore((state) => state.payments);
+	const refunds = useAdminStore((state) => state.refunds);
+	const notifications = useAdminStore((state) => state.notifications);
 
-	return { products, users, orders, inventory, user };
+	return {
+		products,
+		users,
+		orders,
+		inventory,
+		user,
+		payments,
+		refunds,
+		notifications,
+	};
 };

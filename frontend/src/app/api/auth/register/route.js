@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { sendMail } from "@/utils/helper/sendMail";
 
 const prisma = new PrismaClient();
 const SALT_ROUND = 10;
@@ -46,7 +47,15 @@ export async function POST(req) {
 				agreeTerms: terms,
 			},
 		});
-
+		const mailPayload = {
+			to: email,
+			subject: "welcome",
+			template: "register",
+			replacements: {
+				name: name.split(" ")[0],
+			},
+		};
+		await sendMail(mailPayload);
 		return NextResponse.json(
 			{ message: "User Registered Successfully", user: newUser },
 			{ status: 200 },

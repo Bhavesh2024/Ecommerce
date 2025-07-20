@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Order Delivered - Upsquare Art</title>
+	</head>
+	<body
+		style="
+			margin: 0;
+			padding: 20px;
+			background: #f3f4f6;
+			font-family: Arial, sans-serif;
+			color: #1f2937;
+		">
+		<table
+			width="100%"
+			cellpadding="0"
+			cellspacing="0"
+			border="0"
+			style="
+				max-width: 600px;
+				margin: auto;
+				background: #ffffff;
+				border-radius: 10px;
+				border-top: 5px solid #7c3aed;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			">
+			<!-- Header -->
+			<tr>
+				<td
+					align="center"
+					style="padding: 20px">
+					<img
+						src="{{logo}}"
+						alt="Upsquare Art"
+						style="
+							width: 50px;
+							height: 50px;
+							border-radius: 100%;
+						" />
+					<div
+						style="
+							color: #7c3aed;
+							font-size: 20px;
+							margin-top: 10px;
+						">
+						Order Delivery Confirmation
+					</div>
+				</td>
+			</tr>
+
+			<!-- Content -->
+			<tr>
+				<td
+					style="
+						padding: 20px;
+						font-size: 14px;
+						line-height: 1.6;
+						color: #374151;
+					">
+					<p>Hi {{name}},</p>
+					<p>
+						We’re excited to let you know that your
+						order
+						<strong>#{{orderId}}</strong> has been
+						successfully delivered!
+					</p>
+
+					<table
+						width="100%"
+						cellpadding="0"
+						cellspacing="0"
+						border="0"
+						style="margin-top: 10px">
+						<tr>
+							<td
+								align="left"
+								style="
+									padding: 6px 0;
+									font-weight: bold;
+									color: #4b5563;
+								">
+								Product:
+							</td>
+							<td
+								align="right"
+								style="padding: 6px 0">
+								{{productName}}
+							</td>
+						</tr>
+						<tr>
+							<td
+								align="left"
+								style="
+									padding: 6px 0;
+									font-weight: bold;
+									color: #4b5563;
+								">
+								Order Date:
+							</td>
+							<td
+								align="right"
+								style="padding: 6px 0">
+								{{orderDate}}
+							</td>
+						</tr>
+						<tr>
+							<td
+								align="left"
+								style="
+									padding: 6px 0;
+									font-weight: bold;
+									color: #4b5563;
+								">
+								Delivered On:
+							</td>
+							<td
+								align="right"
+								style="padding: 6px 0">
+								{{deliveryDate}}
+							</td>
+						</tr>
+					</table>
+
+					<p style="margin-top: 20px">
+						We hope you enjoy your purchase! If you have
+						any questions or need help, feel free to
+						contact our support team.
+					</p>
+				</td>
+			</tr>
+
+			<!-- Footer -->
+			<tr>
+				<td
+					style="
+						text-align: center;
+						padding: 15px;
+						font-size: 12px;
+						background: #f9fafb;
+						color: #6b7280;
+					">
+					&copy; {{year}} Upsquare Art. All rights reserved.
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -74,11 +74,14 @@ export async function GET(req, { params }) {
 			orderId: order.orderId,
 			orderItem: order.details,
 			total: order.totalAmount, // You had `totalAmount` but it wasn't defined
+			quantity: order.quantity,
 			orderStatus: order.orderStatus,
 			paymentStatus: order.paymentStatus,
 			address: order.shippingAddress,
 			product: order.product,
 			user: order.user,
+			created_at: order.createdAt,
+			updated_at: order.updatedAt,
 		};
 
 		return NextResponse.json({

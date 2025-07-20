@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Welcome to Upsquare Art</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background: #f3f4f6;
+				font-family: Arial, sans-serif;
+				color: #1f2937;
+			}
+			.container {
+				max-width: 600px;
+				margin: 20px auto;
+				background: #fff;
+				border-radius: 10px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+				border-top: 5px solid #7c3aed;
+			}
+			.header {
+				padding: 10px;
+				text-align: center;
+			}
+			.header img {
+				height: 50px;
+				border-radius: 100%;
+				width: 50px;
+			}
+			.title {
+				font-size: 22px;
+				color: #7c3aed;
+				margin-top: 10px;
+			}
+			.content {
+				padding: 20px;
+			}
+			.greeting {
+				font-size: 18px;
+				color: #111827;
+				margin-bottom: 15px;
+			}
+			.message-box {
+				background: #f3e8ff;
+				border: 2px dashed #7c3aed;
+				padding: 15px;
+				border-radius: 6px;
+				color: #4b5563;
+				font-size: 15px;
+				text-align: center;
+				line-height: 1.6;
+			}
+			.footer {
+				font-size: 12px;
+				color: #6b7280;
+				padding: 15px 20px;
+				text-align: center;
+				background: #f9fafb;
+			}
+			@media (max-width: 600px) {
+				.container {
+					margin: 10px;
+				}
+				.title {
+					font-size: 18px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<img
+					src="{{logo}}"
+					alt="Upsquare Art Logo" />
+				<div class="title">Welcome to Upsquare Art!</div>
+			</div>
+			<div class="content">
+				<p class="greeting">Hi {{name}},</p>
+				<div class="message-box">
+					We are excited to have you as part of our Upsquare
+					Art family.<br />
+					Explore unique artwork, discover your creativity,
+					and enjoy our exclusive collection.<br /><br />
+					Thank you for joining us!
+				</div>
+			</div>
+			<div class="footer">
+				&copy; {{year}} Upsquare Art. All rights reserved.
+			</div>
+		</div>
+	</body>
+</html>

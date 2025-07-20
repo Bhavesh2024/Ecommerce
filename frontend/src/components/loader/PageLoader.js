@@ -9,8 +9,8 @@ const PageLoader = ({ component }) => {
 			{component ? (
 				component
 			) : (
-				<div className='flex items-center justify-center h-screen w-full '>
-					<LoaderCircle className='size-20 text-blue-500 animate-spin' />
+				<div className='flex items-center justify-center min-h-[50vh] h-full w-full min-w-[300px] '>
+					<LoaderCircle className='size-10 text-purple-700 animate-spin' />
 				</div>
 			)}
 		</>

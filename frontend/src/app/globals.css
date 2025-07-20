@@ -17,3 +17,16 @@
 body {
 	/* font-family: "Poppins", sans-serif; */
 }
+@layer utilities {
+	@media (min-width: 250px) and (max-width: 349px) {
+		.grid-cols-xs-1 {
+			grid-template-columns: repeat(1, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 350px) and (max-width: 599px) {
+		.grid-cols-xs-2 {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+}

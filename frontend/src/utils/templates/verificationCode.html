@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Password Reset Code</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background: #f3f4f6; /* slate background */
+				font-family: Arial, sans-serif;
+				color: #333;
+			}
+			.container {
+				max-width: 600px;
+				margin: 20px auto;
+				background: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+			}
+			.header {
+				padding: 10px;
+			}
+			.header img {
+				max-height: 50px;
+				width: 50px;
+				border-radius: 100%;
+			}
+			.content {
+				padding: 20px;
+			}
+			.greeting {
+				font-size: 18px;
+				margin-bottom: 10px;
+			}
+			.code-box {
+				margin: 20px 0;
+				padding: 15px;
+				background: #f3e8ff;
+				border: 2px dashed #7c3aed;
+				text-align: center;
+				font-size: 24px;
+				letter-spacing: 5px;
+				color: #7c3aed;
+				border-radius: 4px;
+				font-weight: bold;
+			}
+			.message {
+				font-size: 15px;
+				color: #4b5563; /* slate text */
+			}
+			.footer {
+				font-size: 12px;
+				color: #6b7280;
+				padding: 15px 20px;
+				text-align: center;
+				background: #f9fafb;
+			}
+			@media (max-width: 600px) {
+				.container {
+					margin: 10px;
+				}
+				.code-box {
+					font-size: 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<img
+					src="{{logo}}"
+					alt="Upsquare Art Logo" />
+			</div>
+			<div class="content">
+				<p class="greeting">Hello {{username}},</p>
+				<p class="message">
+					We received a request to reset your account
+					password. Please use the verification code below
+					to proceed:
+				</p>
+
+				<div class="code-box">{{verificationCode}}</div>
+
+				<p class="message">
+					If you did not request this, please ignore this
+					email. Your account remains secure.
+				</p>
+			</div>
+			<div class="footer">
+				&copy; {{year}} Upsquare Art. All rights reserved.
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Your Order Confirmation - Upsquare Art</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 20px;
+				background: #f3f4f6;
+				font-family: Arial, sans-serif;
+				color: #374151;
+			}
+			.container {
+				max-width: 600px;
+				margin: auto;
+				background: #fff;
+				border-radius: 10px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+				border-top: 5px solid #7c3aed;
+			}
+			.header {
+				text-align: center;
+				padding: 20px;
+			}
+			.header img {
+				width: 50px;
+				height: 50px;
+				border-radius: 100%;
+			}
+			.title {
+				color: #7c3aed;
+				font-size: 20px;
+				margin-top: 10px;
+			}
+			.content {
+				padding: 20px;
+				font-size: 14px;
+				color: #374151;
+			}
+			.block {
+				background: #f3e8ff;
+				border: 1px dashed #7c3aed;
+				border-radius: 6px;
+				padding: 12px;
+				margin-top: 15px;
+			}
+			.row {
+				display: flex;
+				justify-content: space-between;
+				margin: 8px 0;
+				font-size: 14px;
+			}
+			.footer {
+				text-align: center;
+				padding: 15px;
+				font-size: 12px;
+				background: #f9fafb;
+				color: #6b7280;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<!-- Header -->
+			<div class="header">
+				<img
+					src="{{logo}}"
+					alt="Upsquare Art" />
+				<div class="title">Thank You for Your Purchase!</div>
+			</div>
+
+			<!-- Content -->
+			<div class="content">
+				<p>Hi {{name}},</p>
+				<p>
+					We have received your order
+					<strong>#{{orderId}}</strong>. Below are your
+					order details:
+				</p>
+
+				<!-- Optional Variants -->
+				{{summarySection}}
+
+				<p style="margin-top: 20px">
+					We will notify you once your order is shipped. For
+					any queries, feel free to contact us.
+				</p>
+			</div>
+
+			<!-- Footer -->
+			<div class="footer">
+				&copy; {{year}} Upsquare Art. All rights reserved.
+			</div>
+		</div>
+	</body>
+</html>

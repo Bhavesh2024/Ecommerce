@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ProductNav from "@/layout/navbar/ProductNav";
@@ -11,6 +11,7 @@ import { handleAuth } from "@/utils/api/authApi";
 import Message from "@/components/popup/Message";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 // Yup validation schema
 const SignupSchema = Yup.object().shape({
@@ -30,8 +31,17 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignupPage = () => {
-	const { message, type, showSuccess, showError, isOpen, closePopup } =
-		usePopupMessage();
+	const [showPassword, setShowPassword] = useState(false);
+	const {
+		message,
+		type,
+		showSuccess,
+		showError,
+		isOpen,
+		closePopup,
+		loading,
+		startLoading,
+	} = usePopupMessage();
 	const router = useRouter();
 	const { mutate, isError, isPending, isSuccess } = useMutation({
 		mutationFn: handleAuth,
@@ -39,7 +49,6 @@ const SignupPage = () => {
 			showSuccess(data.message);
 		},
 		onError: (err) => {
-			console.log("err", err);
 			showError(err);
 		},
 	});
@@ -49,6 +58,8 @@ const SignupPage = () => {
 			setTimeout(() => {
 				if (type == "success") {
 					router.push("/user/customer/auth/login");
+				} else {
+					closePopup();
 				}
 			}, 3000);
 		}
@@ -60,16 +71,25 @@ const SignupPage = () => {
 			</div>
 
 			<div className='min-h-screen mt-16 md:mt-0 grid grid-cols-1 lg:grid-cols-2 gap-3 w-screen '>
-				{/* Left column (Form) */}
+				{/* Banner Image */}
+				<div className='hidden lg:flex items-center h-screen w-full'>
+					<img
+						src='/images/auth/auth-banner.svg'
+						alt='Banner'
+						className='h-10/12 w-full object-contain'
+					/>
+				</div>
+				{/* Sign Up Form */}
 				<div className='flex items-center justify-center p-8'>
 					<div className='w-full md:w-3/4 lg:w-2/3 relative'>
 						{!isPending && message && (
 							<Message
 								type={type}
 								message={message}
+								position='absolute -top-12'
 							/>
 						)}
-						<h2 className='text-2xl md:text-4xl font-bold text-neutral-700 mb-2'>
+						<h2 className='text-2xl md:text-3xl font-bold font-sans text-purple-600 mb-2'>
 							Create Account
 						</h2>
 						<p className=' text-gray-600 mb-6'>
@@ -89,10 +109,7 @@ const SignupPage = () => {
 							}}
 							validationSchema={SignupSchema}
 							onSubmit={async (values) => {
-								console.log(
-									"Submitted Data:",
-									values,
-								);
+								startLoading();
 								try {
 									mutate({
 										method: "post",
@@ -106,7 +123,11 @@ const SignupPage = () => {
 									);
 								}
 							}}>
-							{({ isSubmitting }) => (
+							{({
+								isSubmitting,
+								errors,
+								touched,
+							}) => (
 								<Form className='space-y-4'>
 									<div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
 										<div>
@@ -114,7 +135,12 @@ const SignupPage = () => {
 												type='text'
 												name='name'
 												placeholder='Full Name'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'
+												className={`input w-full h-10 px-2 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.name &&
+													touched.name
+														? "border-red-500"
+														: "border-slate-400"
+												}`}
 											/>
 											<ErrorMessage
 												name='name'
@@ -127,7 +153,12 @@ const SignupPage = () => {
 											<Field
 												type='date'
 												name='birthDate'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'
+												className={`input w-full h-10 px-2 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.birthDate &&
+													touched.birthDate
+														? "border-red-500"
+														: "border-slate-400"
+												}`}
 											/>
 											<ErrorMessage
 												name='birthDate'
@@ -141,7 +172,12 @@ const SignupPage = () => {
 											<Field
 												as='select'
 												name='gender'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'>
+												className={`input w-full h-10 px-2 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.gender &&
+													touched.gender
+														? "border-red-500"
+														: "border-slate-400"
+												}`}>
 												<option value=''>
 													Select
 													Gender
@@ -168,7 +204,12 @@ const SignupPage = () => {
 												type='tel'
 												name='contact'
 												placeholder='Contact Number'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'
+												className={`input w-full h-10 px-2 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.contact &&
+													touched.contact
+														? "border-red-500"
+														: "border-slate-400"
+												}`}
 											/>
 											<ErrorMessage
 												name='contact'
@@ -183,7 +224,12 @@ const SignupPage = () => {
 												type='email'
 												name='email'
 												placeholder='Email'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'
+												className={`input w-full h-10 px-2 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.email &&
+													touched.email
+														? "border-red-500"
+														: "border-slate-400"
+												}`}
 											/>
 											<ErrorMessage
 												name='email'
@@ -193,12 +239,44 @@ const SignupPage = () => {
 										</div>
 
 										<div>
-											<Field
-												type='password'
-												name='password'
-												placeholder='Password'
-												className='input w-full h-10 px-2 border border-slate-400 rounded-md'
-											/>
+											<div className='relative'>
+												<Field
+													type={
+														showPassword
+															? "text"
+															: "password"
+													}
+													name='password'
+													placeholder='Password'
+													className={`input w-full h-10 px-2 pr-10 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+														errors.password &&
+														touched.password
+															? "border-red-500"
+															: "border-slate-400"
+													}`}
+												/>
+												<div
+													className='absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-purple-600'
+													onClick={() =>
+														setShowPassword(
+															!showPassword,
+														)
+													}>
+													{showPassword ? (
+														<EyeOff
+															size={
+																18
+															}
+														/>
+													) : (
+														<Eye
+															size={
+																18
+															}
+														/>
+													)}
+												</div>
+											</div>
 											<ErrorMessage
 												name='password'
 												component='div'
@@ -219,7 +297,7 @@ const SignupPage = () => {
 											I agree to the{" "}
 											<Link
 												href='/term-condition'
-												className='text-indigo-600 underline'>
+												className='text-purple-700 hover:text-purple-500 underline'>
 												Terms &
 												Conditions
 											</Link>
@@ -233,11 +311,11 @@ const SignupPage = () => {
 
 									<button
 										type='submit'
-										className=' w-full bg-indigo-500 text-white py-2 rounded  hover:bg-indigo-700 transition'
+										className=' w-full bg-purple-700 text-white py-2 rounded  hover:bg-purple-500 transition'
 										disabled={
 											isSubmitting
 										}>
-										{isSubmitting
+										{loading
 											? "Submitting..."
 											: "Sign Up"}
 									</button>
@@ -246,7 +324,7 @@ const SignupPage = () => {
 										account ?{" "}
 										<Link
 											href={`/user/customer/auth/login`}
-											className='text-indigo-500 hover:text-indigo-600'>
+											className='text-purple-700 hover:text-purple-500'>
 											Login
 										</Link>
 									</p>
@@ -254,15 +332,6 @@ const SignupPage = () => {
 							)}
 						</Formik>
 					</div>
-				</div>
-
-				{/* Right column (Image) */}
-				<div className='hidden lg:flex h-full w-full'>
-					<img
-						src='/images/auth/auth-banner.svg'
-						alt='Banner'
-						className='h-full w-full object-contain'
-					/>
 				</div>
 			</div>
 		</>

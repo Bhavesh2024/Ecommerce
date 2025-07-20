@@ -3,6 +3,7 @@ import { create } from "zustand";
 const initialState = {
 	user: null,
 	orders: [],
+	notFound: false,
 };
 
 const useCustomerStore = create((set) => ({
@@ -60,7 +61,8 @@ export const useCustomerStoreActions = () => {
 export const useCustomerStoreState = () => {
 	const user = useCustomerStore((state) => state.user);
 	const orders = useCustomerStore((state) => state.orders);
-	return { user, orders };
+	const notFound = useCustomerStore((state) => state.notFound);
+	return { user, orders, notFound };
 };
 
 export default useCustomerStore;

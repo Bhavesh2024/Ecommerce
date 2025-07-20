@@ -11,7 +11,11 @@ import {
 import EditProfileForm from "@/components/form/profile/EditProfileForm";
 
 const Page = () => {
-	const { data, isSuccess, isError, isLoading } = useAuth(true);
+	const { data, isSuccess, isError, isLoading } = useAuth(
+		"login",
+		"",
+		true,
+	);
 	const { user } = useAdminStoreState();
 	const { setValue } = useAdminStoreActions();
 	useEffect(() => {

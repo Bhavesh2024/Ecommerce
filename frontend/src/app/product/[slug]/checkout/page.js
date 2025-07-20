@@ -1,20 +1,23 @@
 "use client";
-import {
-	useCustomerStoreActions,
-	useCustomerStoreState,
-} from "@/hooks/store/useCustomerStore";
+import { useCustomerStoreActions } from "@/hooks/store/useCustomerStore";
 import { useAuth } from "@/hooks/useAuth";
 import { useProduct } from "@/hooks/useProduct";
-import CheckoutForm from "@/components/form/checkout/CheckoutForm";
 import PageLoader from "@/components/loader/PageLoader";
 import NotFound from "@/components/not-found/NotFound";
 import ProductNav from "@/layout/navbar/ProductNav";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
+import dynamic from "next/dynamic";
+import { CheckoutFormLoader } from "@/components/loader/FormLoader";
+const CheckoutForm = dynamic(
+	() => import("@/components/form/checkout/CheckoutForm"),
+	{
+		ssr: true,
+		loading: () => <CheckoutFormLoader />,
+	},
+);
 const Page = () => {
 	const { slug } = useParams();
-	const { user } = useCustomerStoreState();
 	const {
 		data: authResponseData,
 		isSuccess: isAuthSuccess,
@@ -47,10 +50,16 @@ const Page = () => {
 			<div className='fixed top-0 left-0 w-full'>
 				<ProductNav />
 			</div>
-			{isLoading && <PageLoader />}
-			{(isError || isAuthError) && <NotFound />}
+			{isLoading && !authResponseData && <PageLoader />}
+			{(isError || isAuthError) && (
+				<NotFound
+					title='401'
+					heading="You're not logged in"
+					message='Please log in to continue to the checkout.'
+				/>
+			)}
 			{product && authResponseData && (
-				<div className='mt-20'>
+				<div className='mt-20 '>
 					<CheckoutForm
 						product={product}
 						user={authResponseData.user}

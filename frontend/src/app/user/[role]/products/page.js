@@ -16,11 +16,13 @@ import ViewProduct from "@/components/modal/view/ViewProduct";
 import DataTable from "@/components/table/DataTable";
 import { handleProduct } from "@/utils/api/productApi";
 import { useMutation } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Package, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import NoItem from "@/components/not-found/NoItem";
+import { useParams, useRouter } from "next/navigation";
 
 const page = () => {
+	const { role } = useParams();
 	const [openProductForm, setOpenProductForm] = useState(false);
 	const [productData, setProductData] = useState(null);
 	const [currentProduct, setCurrentProduct] = useState(null);
@@ -32,17 +34,29 @@ const page = () => {
 		isLoading,
 		isError,
 	} = useProduct(true, "all");
+	const router = useRouter();
 	const { products } = useAdminStoreState();
 	const { addAllItem, deleteItem } = useAdminStoreActions();
 	const [id, setId] = useState(null);
-	const { message, isOpen, showError, showSuccess, type, closePopup } =
-		usePopupMessage();
+	const {
+		message,
+		isOpen,
+		showError,
+		showSuccess,
+		type,
+		closePopup,
+		loading,
+		startLoading,
+	} = usePopupMessage();
 	const { mutate: removeProductMutation } = useMutation({
 		mutationFn: handleProduct,
 		onSuccess: (data) => {
 			deleteItem("products", id);
 			showSuccess(data.message);
 			setAlert(false);
+			setTimeout(() => {
+				closePopup();
+			}, 3000);
 		},
 		onError: (err) => {
 			setAlert(false);
@@ -72,7 +86,7 @@ const page = () => {
 				<img
 					src={value}
 					alt={value}
-					className='size-10 rounded-md'
+					className='size-10 rounded-md mix-blend-multiply'
 				/>
 			),
 		},
@@ -89,15 +103,15 @@ const page = () => {
 			name: "Stock Status",
 			render: (value) => (
 				<span
-					className={`text-nowrap
-						${value == 0 ? "text-red-500" : "text-emerald-500"}`}>
+					className={`text-nowrap text-slate-100 text-xs p-1 px-2 w-fit rounded-full
+						${value == 0 ? "bg-red-500" : "bg-emerald-500"}`}>
 					{value == 0 ? "Out of stock" : "In Stock"}
 				</span>
 			),
 		},
 		{
 			key: "defaultPrice",
-			name: "Price",
+			name: "Price (₹)",
 		},
 		{
 			key: "description",
@@ -107,7 +121,7 @@ const page = () => {
 		},
 		{
 			key: "discount",
-			name: "Discount",
+			name: "Discount (%)",
 		},
 		{
 			key: "status",
@@ -115,7 +129,14 @@ const page = () => {
 			render: (value) => (
 				<span
 					className={`
-						text-nowrap ${!value ? "text-red-500" : "text-emerald-500"}`}>
+		inline-flex items-center gap-1
+		text-nowrap px-2 py-1 rounded-full text-white text-xs 
+		${!value ? "bg-red-500" : "bg-emerald-500"}
+	`}>
+					<span
+						className={`w-2 h-2 rounded-full inline-block ${
+							!value ? "bg-white" : "bg-white"
+						}`}></span>
 					{!value ? "Deactive" : "Active"}
 				</span>
 			),
@@ -129,6 +150,8 @@ const page = () => {
 	};
 
 	const handleDelete = () => {
+		setAlert(false);
+		startLoading();
 		removeProductMutation({
 			id: id,
 			method: "delete",
@@ -163,24 +186,36 @@ const page = () => {
 					btn={{
 						name: "Add",
 						icon: <Plus />,
-						handler: () => handleProductForm("add"),
+						handler: () =>
+							router.push(
+								`/user/${role}/products/new/add`,
+							),
 					}}
 				/>
 				{/* Product Table*/}
 				<div className='w-full'>
 					{isLoading && <PageLoader />}
-					{(isError || products.length == 0) && (
-						<NoItem message={"No Product Found"} />
+					{isError && (
+						<NoItem
+							message={"No Products Found"}
+							icon={
+								<Package className='size-16 text-purple-500' />
+							}
+						/>
 					)}
-					{isSuccess && (
+					{isSuccess && products && (
 						<DataTable
 							data={productDataCol}
 							values={products}
 							onView={(data) =>
-								setCurrentProduct(data)
+								router.push(
+									`/user/${role}/products/${data.slug}/view`,
+								)
 							}
 							onEdit={(data) =>
-								handleProductForm("edit", data)
+								router.push(
+									`/user/${role}/products/${data.slug}/edit`,
+								)
 							}
 							onDelete={(row) =>
 								handleDeleteAlert(row)
@@ -214,8 +249,9 @@ const page = () => {
 				</>
 			</Modal>
 			<Modal
-				open={isOpen}
+				open={isOpen || loading}
 				onClose={closePopup}>
+				{loading && <PageLoader />}
 				{isOpen && (
 					<Response
 						message={message}

@@ -1,16 +1,17 @@
-// hooks/usePopupMessage.js
 import { useState, useCallback, useEffect } from "react";
 
 export const usePopupMessage = () => {
 	const [message, setMessage] = useState("");
-	const [type, setType] = useState(null);
+	const [type, setType] = useState(null); // 'success' | 'error' | null
 	const [isOpen, setIsOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// Success message handler
 	const showSuccess = useCallback((msg) => {
 		setMessage(msg);
 		setType("success");
 		setIsOpen(true);
+		setLoading(false); // stop loading on success
 	}, []);
 
 	// Error message handler
@@ -18,31 +19,42 @@ export const usePopupMessage = () => {
 		setMessage(msg);
 		setType("error");
 		setIsOpen(true);
+		setLoading(false); // stop loading on error
 	}, []);
 
-	// Close popup and reset message
+	// Start loading manually
+	const startLoading = useCallback(() => {
+		setLoading(true);
+		setIsOpen(false);
+		setMessage("");
+		setType(null);
+	}, []);
+
+	// Close popup manually
 	const closePopup = useCallback(() => {
 		setIsOpen(false);
 		setMessage("");
 		setType(null);
 	}, []);
 
+	// Auto-close error messages after 3 seconds
 	useEffect(() => {
-		if (isOpen) {
-			setTimeout(() => {
-				if (type == "error") {
-					setIsOpen(false);
-				}
+		if (isOpen && type === "error") {
+			const timer = setTimeout(() => {
+				setIsOpen(false);
 			}, 3000);
+			return () => clearTimeout(timer);
 		}
 	}, [isOpen, type]);
-	// Return all the state and handlers
+
 	return {
 		message,
 		type,
 		isOpen,
+		loading,
 		showSuccess,
 		showError,
+		startLoading,
 		closePopup,
 	};
 };

@@ -1,40 +1,94 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-import ProductNav from "@/layout/navbar/ProductNav";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+	ShoppingCart,
+	Image as GalleryImage,
+	Package,
+	PackagePlus,
+	Share2,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { useProduct } from "@/hooks/useProduct";
-import PageLoader from "@/components/loader/PageLoader";
-import NotFound from "@/components/not-found/NotFound";
-import ProductCard from "@/components/card/ProductCard";
 import { useAuth } from "@/hooks/useAuth";
+import ProductNav from "@/layout/navbar/ProductNav";
+import NotFound from "@/components/not-found/NotFound";
+import PageLoader from "@/components/loader/PageLoader";
+import dynamic from "next/dynamic";
+import { ProductCardLoader } from "@/components/loader/CardLoader";
+import {
+	NoItemLoader,
+	ProductAddonLoader,
+} from "@/components/loader/ItemLoader";
+import MessageLoader from "@/components/loader/MessageLoader";
+import {
+	PricingTableLoader,
+	ProductImageGalleryLoader,
+} from "@/components/loader/ProductLoader";
+import { generateOptimizedUrl } from "@/utils/helper/generator";
+import Image from "next/image";
+const PricingTable = dynamic(() =>
+	import("@/components/product/PricingTable", {
+		ssr: true,
+		loading: () => <PricingTableLoader />,
+	}),
+);
+const ProductCard = dynamic(() => import("@/components/card/ProductCard"), {
+	ssr: true,
+	loading: () => <ProductCardLoader />,
+});
+
+const NoItem = dynamic(() => import("@/components/not-found/NoItem"), {
+	ssr: false,
+	loading: () => <NoItemLoader />,
+});
+
+const Message = dynamic(() => import("@/components/popup/Message"), {
+	ssr: false,
+	loading: () => <MessageLoader />,
+});
+
+const ProductImageGallery = dynamic(
+	() => import("@/components/product/ProductImageGallery"),
+	{
+		ssr: true,
+		loading: () => <ProductImageGalleryLoader />,
+	},
+);
+
+const ProductAddon = dynamic(
+	() => import("@/components/product/ProductAddon"),
+	{
+		ssr: true,
+		loading: () => <ProductAddonLoader />,
+	},
+);
 
 const Page = () => {
 	const { slug } = useParams();
+	const router = useRouter();
 	const { data, isSuccess, isError, isLoading } = useProduct(true, "all");
 	const { isError: isAuthError } = useAuth();
-	const router = useRouter();
 
 	const [product, setProduct] = useState(null);
 	const [related, setRelated] = useState([]);
+	const [activeTab, setActiveTab] = useState("gallery");
+	const [showMessage, setShowMessage] = useState(false);
+	const [messageContent, setMessageContent] = useState({
+		type: "success",
+		message: "",
+	});
 
-	const sliderSettings = {
-		autoplay: true,
-		autoplaySpeed: 2000,
-		infinite: true,
-		slidesToShow: 4,
-		slidesToScroll: 1,
-		responsive: [
-			{ breakpoint: 1024, settings: { slidesToShow: 2 } },
-			{ breakpoint: 640, settings: { slidesToShow: 1 } },
-		],
-	};
+	const tabs = [
+		{
+			id: "gallery",
+			icon: <GalleryImage size={18} />,
+			label: "Gallery",
+		},
+		{ id: "pricing", icon: <Package size={18} />, label: "Pricing" },
+		{ id: "extras", icon: <PackagePlus size={18} />, label: "Extras" },
+	];
 
-	// Set product when data is loaded
 	useEffect(() => {
 		if (isSuccess && data?.products?.length) {
 			const currentProduct = data.products.find(
@@ -53,303 +107,403 @@ const Page = () => {
 		}
 	}, [isSuccess, data, slug]);
 
+	const handleShare = () => {
+		const shareData = {
+			title: product.name,
+			url: `${window.location.origin}/product/${slug}`,
+		};
+
+		if (navigator.share) {
+			navigator
+				.share(shareData)
+				.catch((err) => console.log("Share failed:", err));
+		} else {
+			navigator.clipboard.writeText(shareData.url);
+			setMessageContent({
+				type: "success",
+				message: "Link copied to clipboard!",
+			});
+			setShowMessage(true);
+		}
+	};
+
+	const handleOrder = () => {
+		if (isAuthError) {
+			setMessageContent({
+				type: "error",
+				message: "Please login to continue",
+			});
+			setShowMessage(true);
+		} else {
+			router.push(`/product/${slug}/checkout`);
+		}
+	};
+
 	if (isLoading) return <PageLoader />;
-	if (isError || !product) return <NotFound />;
-	if (product && !product.status) return <NotFound />;
+	if (isError || !product?.status) return <NotFound />;
 
-	const imageUrl = product.thumbnail || product.images?.[0]?.url;
-	// const { user } = useCustomerStoreState();
-	// console.log(user);
 	return (
-		<>
-			<div className='fixed top-0 left-0 w-full'>
-				<ProductNav />
-			</div>
-			<div className='p-4 mx-auto w-full md:w-3/4 mt-16'>
-				{/* Main Product Section */}
-				<div className='flex flex-col md:flex-row gap-6'>
-					{/* Image */}
-					<div className='w-full md:w-1/3'>
-						<Image
-							src={imageUrl}
-							alt={product.title}
-							width={400}
-							height={300}
-							className='rounded-lg object-fill w-full h-96'
-							unoptimized
-						/>
-					</div>
+		<div className='bg-gray-50 min-h-screen'>
+			<ProductNav />
 
-					{/* Details */}
-					<div className='w-full md:w-1/2 flex flex-col'>
-						<h1 className='text-2xl font-bold text-gray-800 mb-2'>
-							{product.title}
-						</h1>
-
-						<div className='flex flex-col mb-2'>
-							<span className='text-xs text-gray-500'>
-								Category
-							</span>
-							<span className='text-slate-700 font-semibold'>
-								{product.category}
-							</span>
+			{/* Main Content */}
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ duration: 0.3 }}
+				className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+				{/* Product Grid */}
+				<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12'>
+					<ProductImageGallery
+						name={product.name}
+						images={product.images}
+						thumbnail={product.thumbnail}
+					/>
+					{/* Product Details */}
+					<motion.div
+						layout
+						className='space-y-6'>
+						{/* Title and Category */}
+						<div>
+							<motion.h1
+								initial={{ y: -10, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ delay: 0.1 }}
+								className='text-3xl font-bold text-gray-900'>
+								{product.name}
+							</motion.h1>
+							<motion.div
+								initial={{ y: -10, opacity: 0 }}
+								animate={{ y: 0, opacity: 1 }}
+								transition={{ delay: 0.15 }}
+								className='mt-2 flex gap-2 items-center'>
+								<span className='px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800'>
+									{product.category}
+								</span>
+								<span
+									className={`px-3 py-1 rounded-full text-xs font-medium ${
+										product.stockStatus
+											? "text-emerald-800 bg-emerald-100"
+											: "text-red-800 bg-red-100"
+									}`}>
+									{product.stockStatus
+										? "In Stock"
+										: "Out of Stock"}
+								</span>
+							</motion.div>
 						</div>
 
-						<p className='flex flex-col my-2'>
-							<span className='text-xs text-gray-500'>
-								Description
-							</span>
-							<span className='text-slate-700 text-sm'>
-								{product.description}
-							</span>
-						</p>
+						{/* Price Section */}
+						<motion.div
+							initial={{ y: -10, opacity: 0 }}
+							animate={{ y: 0, opacity: 1 }}
+							transition={{ delay: 0.2 }}
+							className='space-y-2'>
+							<div className='flex items-center gap-4'>
+								<span className='text-3xl font-bold text-purple-700'>
+									₹
+									{product.price -
+										product.price *
+											(product.discount /
+												100)}
+								</span>
+								{product.discount > 0 && (
+									<>
+										<span className='text-lg text-gray-500 line-through'>
+											₹
+											{
+												product.price
+											}
+										</span>
+										<span className='px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded'>
+											{
+												product.discount
+											}
+											% OFF
+										</span>
+									</>
+								)}
+							</div>
+						</motion.div>
 
-						{/* Additional Images */}
-						{Array.isArray(product.images) &&
-							product.images.length > 0 && (
-								<div className='flex gap-3 flex-wrap mt-2'>
-									{product.images
-										.filter(
-											(image) =>
-												image.url !==
-												product.thumbnail,
-										)
-										.map(
-											(
-												{
-													url,
-													label,
-												},
-												index,
-											) => (
-												<div
-													key={`image${index}`}
-													className='flex flex-col gap-1 items-center border border-slate-400 rounded-md'>
-													<img
-														src={
-															url
-														}
-														title={
-															label
-														}
-														className='h-32 w-36 object-fill rounded-t-md'
-														alt={
-															label
-														}
-													/>
-													<span className='text-xs text-gray-400 py-1 px-2'>
-														{
-															label
-														}
-													</span>
-												</div>
-											),
-										)}
-								</div>
-							)}
+						{/* Description */}
+						<motion.div
+							initial={{ y: -10, opacity: 0 }}
+							animate={{ y: 0, opacity: 1 }}
+							transition={{ delay: 0.25 }}
+							className='prose text-gray-600'>
+							<p>{product.description}</p>
+						</motion.div>
 
-						{/* Stock & Order Button */}
-						<div className='flex gap-4 mb-4 mt-4'>
-							<button
-								className={`text-sm font-semibold min-w-28 px-4 py-2 text-white rounded ${
+						{/* Action Buttons */}
+						<motion.div
+							initial={{ y: -10, opacity: 0 }}
+							animate={{ y: 0, opacity: 1 }}
+							transition={{ delay: 0.35 }}
+							className='flex flex-wrap gap-3 pt-4'>
+							<motion.button
+								whileHover={
 									product.stockStatus
-										? "bg-green-600 hover:bg-green-700"
-										: "bg-red-500 hover:bg-red-700"
+										? { scale: 1.02 }
+										: {}
+								}
+								whileTap={
+									product.stockStatus
+										? { scale: 0.98 }
+										: {}
+								}
+								onClick={handleOrder}
+								disabled={!product.stockStatus}
+								className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+									product.stockStatus
+										? "bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg"
+										: "bg-gray-300 text-gray-500 cursor-not-allowed"
 								}`}>
+								<ShoppingCart className='h-5 w-5' />
 								{product.stockStatus
-									? "In Stock"
-									: "Out of Stock"}
-							</button>
-							<button
-								className='bg-teal-600 text-white px-4 py-2 rounded hover:bg-green-700'
-								onClick={() =>
-									isAuthError
-										? alert(
-												"You are not login yet",
-										  )
-										: router.push(
-												`/product/${slug}/checkout`,
-										  )
-								}>
-								Order Now
-							</button>
-						</div>
-					</div>
+									? "Order Now"
+									: "Unavailable"}
+							</motion.button>
+
+							<motion.button
+								whileHover={{ scale: 1.02 }}
+								whileTap={{ scale: 0.98 }}
+								onClick={handleShare}
+								className='flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors'>
+								<Share2 className='h-5 w-5' />
+								Share
+							</motion.button>
+						</motion.div>
+					</motion.div>
 				</div>
 
-				{/* Variant Table */}
-				{product.prices?.length > 0 && (
-					<div className='mt-10'>
-						<h3 className='text-lg font-semibold mb-2'>
-							Pricing
-						</h3>
-						{product.prices.map((group, index) => (
-							<div
-								key={`${group.type}-${index}`}
-								className='mb-6'>
-								<table className='w-full border text-sm'>
-									<thead className='bg-sky-100'>
-										<tr>
-											<th className='p-2 border'>
-												#
-											</th>
-											<th className='p-2 border'>
-												{
-													group.type
-												}
-											</th>
-											<th className='p-2 border'>
-												Price
-												(₹)
-											</th>
-											{product.discount >
-												0 && (
-												<>
-													<th className='p-2 border'>
-														Discount
-													</th>
-													<th className='p-2 border'>
-														Total
-													</th>
-												</>
-											)}
-										</tr>
-									</thead>
-									<tbody>
-										{group.variants.map(
-											(
-												variant,
-												idx,
-											) => {
-												const discount =
-													product.discount ||
-													0;
-												const price =
-													variant.value;
-												const discountedPrice =
-													Math.round(
-														(price *
-															discount) /
-															100,
-													);
-												const discountedTotal =
-													discount >
-													0
-														? Math.round(
-																price -
-																	(price *
-																		discount) /
-																		100,
-														  )
-														: price;
+				{/* Product Tabs */}
+				<motion.div
+					layout
+					className='mt-12 bg-white rounded-2xl shadow-sm overflow-hidden'>
+					{/* Tab Headers */}
+					<div className='border-b border-gray-200 overflow-x-auto overflow-y-hidden'>
+						<nav className='flex -mb-px'>
+							{tabs.map((tab) => (
+								<motion.button
+									key={tab.id}
+									whileHover={{
+										backgroundColor:
+											"#f3f4f6",
+									}}
+									onClick={() =>
+										setActiveTab(tab.id)
+									}
+									className={`flex items-center gap-2 py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+										activeTab === tab.id
+											? "border-purple-500 text-purple-600"
+											: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+									}`}>
+									{tab.icon}
+									{tab.label}
+								</motion.button>
+							))}
+						</nav>
+					</div>
 
-												return (
-													<tr
+					{/* Tab Content */}
+					<div className='p-6'>
+						<AnimatePresence mode='wait'>
+							<motion.div
+								key={activeTab}
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -10 }}
+								transition={{ duration: 0.2 }}>
+								{/* Gallery Tab */}
+								{activeTab === "gallery" && (
+									<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
+										{product.images
+											?.length >
+										0 ? (
+											product.images.map(
+												(
+													img,
+													index,
+												) => (
+													<motion.div
 														key={
-															variant.sku
+															index
 														}
-														className='text-center'>
-														<td className='p-2 border'>
-															{idx +
-																1}
-														</td>
-														<td className='p-2 border'>
-															{
-																variant.label
+														whileHover={{
+															scale: 1.02,
+														}}
+														className='group relative aspect-square overflow-hidden rounded-lg border border-gray-200'>
+														<Image
+															src={generateOptimizedUrl(
+																img.url,
+															)}
+															alt={
+																img.label ||
+																`Product view ${
+																	index +
+																	1
+																}`
 															}
-														</td>
-														<td className='p-2 border'>
-															₹
-															{
+															fill
+															sizes='(max-width: 768px) 100vw, 100px'
+															className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
+														/>
+
+														{img.label && (
+															<div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2'>
+																<p className='text-xs text-white truncate'>
+																	{
+																		img.label
+																	}
+																</p>
+															</div>
+														)}
+													</motion.div>
+												),
+											)
+										) : (
+											<NoItem
+												icon={
+													<GalleryImage className='h-12 w-12 text-gray-400' />
+												}
+												message='No additional images available'
+												className='col-span-full py-12'
+											/>
+										)}
+									</div>
+								)}
+
+								{/* Pricing Tab */}
+								{activeTab === "pricing" && (
+									<div className='overflow-x-auto'>
+										{product.prices
+											?.length >
+										0 ? (
+											product.prices.map(
+												(
+													group,
+													index,
+												) => (
+													<PricingTable
+														type={
+															group.type
+														}
+														discount={
+															product.discount
+														}
+														variants={
+															group.variants
+														}
+														index={
+															index
+														}
+													/>
+												),
+											)
+										) : (
+											<NoItem
+												icon={
+													<Package className='h-12 w-12 text-gray-400' />
+												}
+												message='No pricing variants available'
+												className='py-12'
+											/>
+										)}
+									</div>
+								)}
+
+								{/* Extras Tab */}
+								{activeTab === "extras" && (
+									<div>
+										{product.extras
+											?.length >
+										0 ? (
+											<div className='space-y-4'>
+												{product.extras.map(
+													(
+														{
+															name,
+															price,
+														},
+														index,
+													) => (
+														<ProductAddon
+															name={
+																name
+															}
+															price={
 																price
 															}
-														</td>
-														{discount >
-															0 && (
-															<>
-																<td className='p-2 border'>
-																	₹
-																	{
-																		discountedPrice
-																	}
-																</td>
-																<td className='p-2 border'>
-																	₹
-																	{
-																		discountedTotal
-																	}
-																</td>
-															</>
-														)}
-													</tr>
-												);
-											},
+															index={
+																index
+															}
+														/>
+													),
+												)}
+											</div>
+										) : (
+											<NoItem
+												icon={
+													<PackagePlus className='h-12 w-12 text-gray-400' />
+												}
+												message='No add-ons available'
+												className='py-12'
+											/>
 										)}
-									</tbody>
-								</table>
-							</div>
-						))}
+									</div>
+								)}
+							</motion.div>
+						</AnimatePresence>
 					</div>
-				)}
-
-				{/* Extras Section */}
-				{product.extras?.length > 0 && (
-					<div className='mt-6'>
-						<h3 className='text-lg font-semibold mb-2'>
-							Extras
-						</h3>
-						<ul className='list-disc list-inside text-sm text-gray-700'>
-							{product.extras.map((extra, idx) => (
-								<li
-									key={idx}
-									className='my-2'>
-									<span className='font-medium'>
-										{extra.name} :
-									</span>{" "}
-									₹{extra.price}
-								</li>
-							))}
-						</ul>
-					</div>
-				)}
+				</motion.div>
 
 				{/* Related Products */}
 				{related.length > 0 && (
-					<div className='mt-12'>
-						<h2 className='text-xl font-semibold mb-4'>
-							Explore More Products
-						</h2>
+					<motion.section
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.4 }}
+						className='mt-16'>
+						<div className='flex justify-between items-center mb-6'>
+							<h2 className='text-xl font-bold text-gray-900'>
+								You may also like
+							</h2>
+						</div>
 
-						{related.length > 5 ? (
-							<Slider {...sliderSettings}>
-								{related.map((p) => (
-									<div
-										key={p.id}
-										className='px-2'>
-										<ProductCard
-											product={p}
-											showViewMore={
-												false
-											}
-										/>
-									</div>
-								))}
-							</Slider>
-						) : (
-							<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-								{related.map((p) => (
+						<div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-72 w-full'>
+							{related.map((p) => (
+								<div
+									key={p.id}
+									className='px-2 size-72 max-h-60'>
 									<ProductCard
-										key={p.id}
 										product={p}
-										showViewMore={false}
 									/>
-								))}
-							</div>
-						)}
-					</div>
+								</div>
+							))}
+						</div>
+						{/* </Slider> */}
+					</motion.section>
 				)}
-			</div>
-		</>
+			</motion.div>
+
+			{/* Notification Message */}
+			<AnimatePresence>
+				{showMessage && (
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: 20 }}
+						className='fixed top-4 right-4 z-50'>
+						<Message
+							type={messageContent.type}
+							message={messageContent.message}
+							onClose={() => setShowMessage(false)}
+						/>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</div>
 	);
 };
 

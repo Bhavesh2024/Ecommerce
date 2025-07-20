@@ -18,14 +18,24 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import NoItem from "@/components/not-found/NoItem";
-import { Package } from "lucide-react";
+import { Package, Truck } from "lucide-react";
+import Header from "@/components/header/Header";
+import { formatPrice } from "@/utils/helper/formatter";
 
 const page = () => {
 	const { data, isSuccess, isError, isLoading } = useOrder(true, "all");
 	const router = useRouter();
 	const { orders } = useAdminStoreState();
-	const { isOpen, message, showError, showSuccess, type, closePopup } =
-		usePopupMessage();
+	const {
+		isOpen,
+		message,
+		showError,
+		showSuccess,
+		type,
+		closePopup,
+		loading,
+		startLoading,
+	} = usePopupMessage();
 	const { addAllItem, updateItem } = useAdminStoreActions();
 	const [openView, setOpenView] = useState(false);
 	const [currentOrder, setCurrentOrder] = useState(null);
@@ -58,7 +68,7 @@ const page = () => {
 	}, [isSuccess, data]);
 
 	const updateStatus = (order) => {
-		console.log("current", order);
+		startLoading();
 		orderMutation({
 			method: "put",
 			type: "update",
@@ -67,6 +77,11 @@ const page = () => {
 	};
 
 	const orderDataFormat = [
+		{
+			key: "index",
+			name: "#",
+			render: (val, row, index) => index + 1,
+		},
 		{
 			key: "orderId",
 			name: "ID",
@@ -84,7 +99,7 @@ const page = () => {
 		{
 			key: "total",
 			name: "Amount",
-			render: (amount) => `₹${amount}`,
+			render: (amount, row) => formatPrice(amount * row.quantity),
 		},
 		{
 			key: "orderStatus",
@@ -186,17 +201,21 @@ const page = () => {
 	return (
 		<>
 			{isLoading && <PageLoader />}{" "}
-			{!isLoading && isError && (
+			{isError && (
 				<NoItem
 					message={"No Orders Found"}
 					icon={
-						<Package className='size-16 text-gray-500' />
+						<Truck className='size-16 text-purple-500' />
 					}
 				/>
 			)}
-			{Array.isArray(orders) && orders.length > 0 && (
+			{orders && Array.isArray(orders) && orders.length > 0 && (
 				<>
 					<div className='flex flex-col gap-1 w-11/12 mx-auto mt-4'>
+						<Header
+							title='Order'
+							enableBtn={false}
+						/>
 						<DataTable
 							data={orderDataFormat}
 							values={orders}
@@ -239,8 +258,9 @@ const page = () => {
 			</Modal>
 			{/* Response Modal */}
 			<Modal
-				open={isOpen}
+				open={isOpen || loading}
 				onClose={closePopup}>
+				{loading && <PageLoader />}
 				{isOpen && (
 					<Response
 						message={message}

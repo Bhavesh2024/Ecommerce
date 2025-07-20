@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ProductNav from "@/layout/navbar/ProductNav";
@@ -10,6 +10,7 @@ import { handleAuth } from "@/utils/api/authApi";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
 import Message from "@/components/popup/Message";
 import { useParams, useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 // Yup validation schema
 const LoginSchema = Yup.object().shape({
@@ -20,6 +21,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
+	const [showPassword, setShowPassword] = useState(false);
 	const { message, showError, showSuccess, isOpen, type } =
 		usePopupMessage();
 	const router = useRouter();
@@ -47,7 +49,15 @@ const LoginPage = () => {
 			<div className='fixed w-full top-0 start-0'>
 				<ProductNav />
 			</div>
-			<div className='min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-3 w-screen'>
+			<div className='min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-3 w-full bg-purple-50'>
+				{/* Right column (Image) */}
+				<div className='hidden lg:flex h-screen w-full items-center'>
+					<img
+						src='/images/auth/auth-banner.svg'
+						alt='Banner'
+						className='h-10/12 w-full object-contain'
+					/>
+				</div>
 				{/* Left column (Form) */}
 				<div className='flex mt-16 md:mt-0 items-center justify-center p-8 relative'>
 					<div className='w-full md:w-3/4 lg:w-2/3 relative'>
@@ -55,9 +65,10 @@ const LoginPage = () => {
 							<Message
 								type={type}
 								message={message}
+								position='absolute -top-12'
 							/>
 						)}
-						<h2 className='text-2xl md:text-4xl font-bold text-neutral-700  mb-2'>
+						<h2 className='text-2xl md:text-3xl font-bold font-sans  text-purple-600  mb-2'>
 							Login to Your Account
 						</h2>
 						<p className=' text-gray-600 mb-6'>
@@ -90,14 +101,23 @@ const LoginPage = () => {
 									showError(err.message);
 								}
 							}}>
-							{({ isSubmitting }) => (
+							{({
+								isSubmitting,
+								errors,
+								touched,
+							}) => (
 								<Form className='space-y-4'>
 									<div>
 										<Field
 											type='email'
 											name='email'
 											placeholder='Email'
-											className='input w-full h-10 px-2 border border-slate-400 rounded-md'
+											className={`input w-full h-10 px-2 pr-10 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+												errors.email &&
+												touched.email
+													? "border-red-500"
+													: "border-slate-400"
+											}`}
 										/>
 										<ErrorMessage
 											name='email'
@@ -107,22 +127,62 @@ const LoginPage = () => {
 									</div>
 
 									<div>
-										<Field
-											type='password'
-											name='password'
-											placeholder='Password'
-											className='input w-full h-10 px-2 border border-slate-400 rounded-md'
-										/>
+										<div className='relative'>
+											<Field
+												type={
+													showPassword
+														? "text"
+														: "password"
+												}
+												name='password'
+												placeholder='Password'
+												className={`input w-full h-10 px-2 pr-10 border rounded-md focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 ${
+													errors.password &&
+													touched.password
+														? "border-red-500"
+														: "border-slate-400"
+												}`}
+											/>
+											<div
+												className='absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-purple-600'
+												onClick={() =>
+													setShowPassword(
+														!showPassword,
+													)
+												}>
+												{showPassword ? (
+													<EyeOff
+														size={
+															18
+														}
+													/>
+												) : (
+													<Eye
+														size={
+															18
+														}
+													/>
+												)}
+											</div>
+										</div>
 										<ErrorMessage
 											name='password'
 											component='div'
 											className='text-sm text-red-500'
 										/>
+										<div className='flex justify-end'>
+											<Link
+												href={`/user/${role}/auth/verification`}
+												className='text-purple-700 hover:text-purple-500 text-xs flex ms-auto'>
+												Forgot
+												Password
+												?
+											</Link>
+										</div>
 									</div>
-
 									<button
 										type='submit'
-										className=' w-full bg-indigo-500 text-white py-2 rounded  hover:bg-indigo-600 transition'
+										className=' w-full bg-purple-700 text-white py-2 rounded  hover:bg-purple-500 transition'
 										disabled={
 											isSubmitting
 										}>
@@ -134,7 +194,7 @@ const LoginPage = () => {
 										Create an account ?{" "}
 										<Link
 											href={`/user/customer/auth/signup`}
-											className='text-indigo-500 hover:text-indigo-600'>
+											className='text-purple-700 hover:text-purple-500'>
 											Register
 										</Link>
 									</p>
@@ -142,15 +202,6 @@ const LoginPage = () => {
 							)}
 						</Formik>
 					</div>
-				</div>
-
-				{/* Right column (Image) */}
-				<div className='hidden lg:flex h-full w-full'>
-					<img
-						src='/images/auth/auth-banner.svg'
-						alt='Banner'
-						className='h-full w-full object-contain'
-					/>
 				</div>
 			</div>
 		</>

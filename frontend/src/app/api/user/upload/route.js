@@ -26,7 +26,7 @@ export async function POST(req) {
 	try {
 		const formData = await req.formData();
 		const file = formData.get("image");
-
+		console.log("file", file);
 		if (!file || typeof file === "string") {
 			return NextResponse.json(
 				{ error: "No file uploaded" },

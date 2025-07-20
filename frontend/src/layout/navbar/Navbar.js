@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Menu, X, User, SquareUser, Package, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
@@ -10,14 +10,16 @@ import { handleAuth } from "@/utils/api/authApi";
 import useCustomerStore, {
 	useCustomerStoreState,
 } from "@/hooks/store/useCustomerStore";
+import { defaultImage, defaultImageUrl } from "@/utils/helper/web-content";
 
 const Navbar = () => {
 	const pathname = usePathname();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [userMenuOpen, setUserMenuOpen] = useState(false);
+	const dropdownRef = useRef(0);
 	const { user } = useCustomerStoreState();
 	const router = useRouter();
-	const { isSuccess, isLoading, data } = useAuth(true);
+	const { isSuccess, isLoading, data } = useAuth("login", "", true);
 	const { mutate } = useMutation({
 		mutationFn: handleAuth,
 		onSuccess: (data) => {
@@ -37,15 +39,15 @@ const Navbar = () => {
 		{
 			link: "/profile",
 			title: "My Profile",
-			classes: "text-slate-500 hover:bg-blue-100 ",
-			icon: <SquareUser className='size-5 text-blue-500' />,
+			classes: "text-slate-700 hover:bg-purple-200 rounded-t-md",
+			icon: <SquareUser className='size-5 text-purple-500' />,
 		},
 
 		{
 			link: "/my-orders",
 			title: "My Orders",
-			classes: "text-slate-500 hover:bg-yellow-100",
-			icon: <Package className='size-5 text-yellow-500' />,
+			classes: "text-slate-700 hover:bg-purple-200",
+			icon: <Package className='size-5 text-purple-500' />,
 		},
 	];
 
@@ -57,19 +59,43 @@ const Navbar = () => {
 		}
 	};
 
+	const handleUserDropdown = (e) => {
+		e.stopPropagation();
+		setUserMenuOpen(!userMenuOpen);
+		setMenuOpen(false);
+	};
+
+	const handlePageMenu = () => {
+		setMenuOpen(!menuOpen);
+		setUserMenuOpen(false);
+	};
+
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target)
+			) {
+				setUserMenuOpen(false); // Close dropdown
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
 	return (
-		<div className='bg-neutral-900 text-white z-20'>
+		<div
+			className='bg-slate-200 text-neutral-800 shadow-lg z-50'
+			onClick={() => setUserMenuOpen(false)}>
 			<div className='flex items-center justify-between px-4  md:px-8 h-20'>
 				{/* Logo */}
 				<div
 					className='h-full flex items-center justify-center'
 					onClick={() => router.push("/")}>
-					{/* <img
-						src="/images/logo/logo.png"
-						alt="Logo"
-						className="h-full w-full object-contain"
-					/> */}
-					<h1 className='text-2xl md:text-3xl font-semibold   text-sky-300 font-serif'>
+					<h1 className='text-2xl md:text-3xl font-semibold font-logo'>
 						Upsquare
 					</h1>
 				</div>
@@ -83,9 +109,9 @@ const Navbar = () => {
 									href={link}
 									className={`${
 										link === pathname
-											? "text-sky-400"
+											? "text-purple-700"
 											: ""
-									} hover:text-yellow-300`}>
+									} hover:text-purple-600`}>
 									{name}
 								</Link>
 							</li>
@@ -96,12 +122,12 @@ const Navbar = () => {
 									<>
 										<Link
 											href='/user/customer/auth/signup'
-											className='px-4 py-2 bg-yellow-400 rounded text-black hover:bg-yellow-300'>
+											className='px-4 py-2 bg-purple-700 rounded text-white hover:bg-purple-500'>
 											Sign Up
 										</Link>
 										<Link
 											href='/user/customer/auth/login'
-											className='px-4 py-2 bg-sky-600 rounded hover:bg-sky-500'>
+											className='px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-500'>
 											Login
 										</Link>
 									</>
@@ -116,27 +142,38 @@ const Navbar = () => {
 							!isSuccess ? "md:hidden" : ""
 						} items-center gap-3`}>
 						{/* User Icon Dropdown */}
-						<div className='relative'>
+						<div className='relative flex items-center'>
 							<button
-								onClick={() =>
-									setUserMenuOpen(
-										!userMenuOpen,
-									)
-								}
-								className=' bg-white text-black rounded-full'>
+								onClick={handleUserDropdown}
+								className={` text-black rounded-full ${
+									user && user.image
+										? ""
+										: "p-1"
+								}`}>
 								{user && user.image ? (
 									<img
 										src={user.image}
 										className='size-10 rounded-full object-fill'
 									/>
 								) : (
-									<User size={20} />
+									// <User
+									// 	size={25}
+									// 	className='text-neutral-600'
+									// />
+									<img
+										src={
+											defaultImageUrl
+										}
+										className='size-8 rounded-full object-fill'
+									/>
 								)}
 							</button>
 							{userMenuOpen && (
-								<div className='absolute right-0 mt-2 w-32 bg-white text-black rounded shadow z-20'>
+								<div
+									className='absolute right-0 top-full mt-2 md:w-40 text-nowrap min-w-28 bg-white text-black rounded shadow z-20'
+									ref={dropdownRef}>
 									{isSuccess ? (
-										<div className='flex flex-col gap-1 text-start py-1'>
+										<div className='flex flex-col gap-1 text-start'>
 											{customerActivities.map(
 												({
 													link,
@@ -159,11 +196,11 @@ const Navbar = () => {
 												),
 											)}
 											<button
-												className='text-start text-slate-500 hover:bg-red-100 h-7 flex items-center gap-1 px-3'
+												className='text-start text-slate-700 hover:bg-purple-200 h-7 flex items-center gap-1 px-3'
 												onClick={
 													handleLogout
 												}>
-												<LogOut className='size-5 text-red-500' />{" "}
+												<LogOut className='size-5 text-purple-500' />{" "}
 												Logout
 											</button>
 										</div>
@@ -171,12 +208,12 @@ const Navbar = () => {
 										<>
 											<Link
 												href='/user/customer/auth/signup'
-												className='block px-4 py-2 hover:bg-gray-100'>
+												className='block font-semibold px-4 py-2 hover:bg-purple-100'>
 												Sign Up
 											</Link>
 											<Link
 												href='/user/customer/auth/login'
-												className='block px-4 py-2 hover:bg-gray-100'>
+												className='block font-semibold px-4 py-2 hover:bg-purple-100'>
 												Login
 											</Link>
 										</>
@@ -188,12 +225,12 @@ const Navbar = () => {
 
 					{/* Hamburger Button */}
 					<button
-						onClick={() => setMenuOpen(!menuOpen)}
-						className='text-white focus:outline-none md:hidden'>
+						onClick={handlePageMenu}
+						className='text-neutral-800 focus:outline-none md:hidden'>
 						{menuOpen ? (
-							<X size={28} />
+							<X size={25} />
 						) : (
-							<Menu size={28} />
+							<Menu size={25} />
 						)}
 					</button>
 				</div>
@@ -201,16 +238,16 @@ const Navbar = () => {
 
 			{/* Mobile Sidebar */}
 			{menuOpen && (
-				<div className='md:hidden bg-neutral-800 text-white px-6 py-4 space-y-4'>
+				<div className='md:hidden bg-slate-200  px-6 py-4 space-y-4 border-t border-slate-300 shadow-lg'>
 					{pagesList.map(({ link, name }) => (
 						<Link
 							key={link}
 							href={link}
 							className={`block ${
 								link === pathname
-									? "text-sky-400"
+									? "text-indigo-900"
 									: ""
-							} hover:text-yellow-300`}
+							} hover:text-indigo-500`}
 							onClick={() => setMenuOpen(false)}>
 							{name}
 						</Link>

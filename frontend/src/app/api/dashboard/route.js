@@ -10,14 +10,29 @@ export async function GET(req, { params }) {
 			prisma.product.count(),
 			prisma.order.count(),
 		]);
-
-		console.log({ userCount, productCount });
-
+		const totalPayment = await prisma.payment.aggregate({
+			_sum: {
+				amount: true,
+			},
+			where: {
+				status: 2,
+			},
+		});
+		const totalRefunds = await prisma.refund.aggregate({
+			_sum: {
+				amount: true, // Replace with your actual payment field name
+			},
+		});
+		console.log(totalPayment);
 		const dashboardData = {
 			count: {
 				user: userCount,
 				product: productCount,
 				order: orderCount,
+				revenue:
+					totalPayment._sum.amount -
+					totalRefunds._sum.amount,
+				refunds: totalRefunds._sum.amount,
 			},
 		};
 		return NextResponse.json({

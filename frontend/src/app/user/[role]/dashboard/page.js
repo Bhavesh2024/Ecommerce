@@ -2,8 +2,19 @@
 
 import { useDashboard } from "@/hooks/useDashboard";
 import PageLoader from "@/components/loader/PageLoader";
-import { Package, Package2, Truck, Users } from "lucide-react";
+import {
+	Banknote,
+	BanknoteArrowDown,
+	BanknoteArrowUp,
+	Package,
+	Package2,
+	Truck,
+	Users,
+	Wallet,
+	Wallet2,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { formatPrice } from "@/utils/helper/formatter";
 
 const Dashboard = () => {
 	const { data, isSuccess, isLoading, isError } = useDashboard();
@@ -21,32 +32,64 @@ const Dashboard = () => {
 			{isError && <div>No Data Found</div>}
 			{isSuccess && dashboard && (
 				<div className='w-full flex items-center justify-center'>
-					<div className='grid grid-cols-2 md:grid-cols-3 w-full p-2 md:w-1/2 gap-3 justify-center items-center'>
-						<div className='h-32 rounded-md border border-slate-300 bg-sky-100 w-full p-3 shadow'>
+					<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full p-2 md:w-3/4 gap-3 justify-center items-center'>
+						<div className='h-32 rounded-md border border-slate-300 bg-white w-full p-3 shadow'>
 							<div className='flex items-center gap-2 text-slate-600'>
-								<Users />
-								<span>Customer</span>
+								<Users className='text-purple-500' />
+								<span className='text-slate-700 font-medium'>
+									Customer
+								</span>
 							</div>
 							<div className='flex items-center h-4/5 text-3xl text-gray-600 font-semibold justify-center'>
 								{dashboard.count.user}
 							</div>
 						</div>
-						<div className='h-32 rounded-md border border-slate-300 w-full bg-amber-100 p-3 shadow'>
+						<div className='h-32 rounded-md border border-slate-300 w-full bg-white p-3 shadow'>
 							<div className='flex items-center gap-2 text-slate-600'>
-								<Package />
-								<span>Products</span>
+								<Package className='text-purple-500' />
+								<span className='text-slate-700 font-medium'>
+									Products
+								</span>
 							</div>
 							<div className='flex items-center h-4/5 text-3xl text-gray-600 font-semibold justify-center'>
 								{dashboard.count.product}
 							</div>
 						</div>
-						<div className='h-32  rounded-md border border-slate-300 w-full bg-indigo-100 p-3 shadow'>
+						<div className='h-32  rounded-md border border-slate-300 w-full bg-white p-3 shadow'>
 							<div className='flex items-center gap-2 text-slate-600'>
-								<Truck />
-								<span>Order</span>
+								<Truck className='text-purple-500' />
+								<span className='text-slate-700 font-medium'>
+									Order
+								</span>
 							</div>
 							<div className='flex items-center h-4/5 text-3xl text-gray-600 font-semibold justify-center'>
 								{dashboard.count.order}
+							</div>
+						</div>
+						<div className='h-32  rounded-md border border-slate-300 w-full bg-white p-3 shadow'>
+							<div className='flex items-center gap-2 text-slate-600'>
+								<BanknoteArrowUp className='text-purple-500' />
+								<span className='text-slate-700 font-medium'>
+									Revenue
+								</span>
+							</div>
+							<div className='flex items-center h-4/5 text-xl text-gray-600 font-semibold justify-center'>
+								{formatPrice(
+									dashboard.count.revenue,
+								)}
+							</div>
+						</div>
+						<div className='h-32  rounded-md border border-slate-300 w-full bg-white p-3 shadow'>
+							<div className='flex items-center gap-2 text-slate-600'>
+								<BanknoteArrowDown className='text-purple-500' />
+								<span className='text-slate-700 font-medium'>
+									Refund
+								</span>
+							</div>
+							<div className='flex items-center h-4/5 text-xl text-gray-600 font-semibold justify-center'>
+								{formatPrice(
+									dashboard.count.refunds,
+								)}
 							</div>
 						</div>
 					</div>
