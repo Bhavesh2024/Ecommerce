@@ -33,3 +33,5 @@ pnpm-debug.log*
 *.local
 
 uploads
+
+upsquare-firebase-admin-sdk.json
