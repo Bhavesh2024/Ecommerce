@@ -14,4 +14,5 @@ export function QueryClientProviderWrapper({ children }) {
 	);
 }
 
+
 export { queryClient };
