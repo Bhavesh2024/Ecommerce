@@ -189,3 +189,42 @@ export const OrderSummaryLoader = () => {
 		</div>
 	);
 };
+
+export const PurchaseSummaryLoader = () => {
+	return (
+		<div className='p-4 border border-slate-300 rounded bg-purple-50 text-sm animate-pulse'>
+			{/* Product Total */}
+			<div className='flex justify-between items-center mb-3'>
+				<div className='h-4 w-24 bg-gray-300 rounded'></div>
+				<div className='h-4 w-16 bg-gray-300 rounded'></div>
+			</div>
+
+			{/* Discount */}
+			<div className='flex justify-between items-center mb-3'>
+				<div className='h-4 w-20 bg-gray-300 rounded'></div>
+				<div className='h-4 w-12 bg-gray-300 rounded'></div>
+			</div>
+
+			{/* Extras Total */}
+			<div className='flex justify-between items-center mb-3'>
+				<div className='h-4 w-24 bg-gray-300 rounded'></div>
+				<div className='h-4 w-16 bg-gray-300 rounded'></div>
+			</div>
+
+			{/* Quantity */}
+			<div className='flex justify-between items-center mb-3'>
+				<div className='h-4 w-20 bg-gray-300 rounded'></div>
+				<div className='h-4 w-8 bg-gray-300 rounded'></div>
+			</div>
+
+			{/* Divider */}
+			<div className='h-px bg-gray-300 my-3'></div>
+
+			{/* Total */}
+			<div className='flex justify-between items-center'>
+				<div className='h-5 w-16 bg-gray-400 rounded'></div>
+				<div className='h-5 w-20 bg-gray-400 rounded'></div>
+			</div>
+		</div>
+	);
+};

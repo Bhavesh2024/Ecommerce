@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import PageLoader from "@/components/loader/PageLoader";
 import NotFound from "@/components/not-found/NotFound";
@@ -8,7 +8,15 @@ import {
 	useAdminStoreState,
 	useAdminStoreActions,
 } from "@/hooks/store/useAdminStore";
-import EditProfileForm from "@/components/form/profile/EditProfileForm";
+import dynamic from "next/dynamic";
+import { EditProfileFormLoader } from "@/components/loader/FormLoader";
+const EditProfileForm = dynamic(
+	() => import("@/components/form/profile/EditProfileForm"),
+	{
+		ssr: true,
+		loading: () => <EditProfileFormLoader />,
+	},
+);
 
 const Page = () => {
 	const { data, isSuccess, isError, isLoading } = useAuth(

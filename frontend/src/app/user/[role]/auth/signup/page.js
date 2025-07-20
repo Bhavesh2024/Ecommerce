@@ -5,13 +5,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ProductNav from "@/layout/navbar/ProductNav";
 import Link from "next/link";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { handleAuth } from "@/utils/api/authApi";
-import Message from "@/components/popup/Message";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import dynamic from "next/dynamic";
+import MessageLoader from "@/components/loader/MessageLoader";
+import Image from "next/image";
+const Message = dynamic(() => import("@/components/popup/Message"), {
+	ssr: false,
+	loading: () => <MessageLoader />,
+});
 
 // Yup validation schema
 const SignupSchema = Yup.object().shape({
@@ -43,7 +48,7 @@ const SignupPage = () => {
 		startLoading,
 	} = usePopupMessage();
 	const router = useRouter();
-	const { mutate, isError, isPending, isSuccess } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: handleAuth,
 		onSuccess: (data) => {
 			showSuccess(data.message);
@@ -73,9 +78,17 @@ const SignupPage = () => {
 			<div className='min-h-screen mt-16 md:mt-0 grid grid-cols-1 lg:grid-cols-2 gap-3 w-screen '>
 				{/* Banner Image */}
 				<div className='hidden lg:flex items-center h-screen w-full'>
-					<img
+					{/* <img
 						src='/images/auth/auth-banner.svg'
 						alt='Banner'
+						className='h-10/12 w-full object-contain'
+					/> */}
+					<Image
+						src='/images/auth/auth-banner.svg'
+						alt='Banner'
+						loading='lazy'
+						height={100}
+						width={100}
 						className='h-10/12 w-full object-contain'
 					/>
 				</div>

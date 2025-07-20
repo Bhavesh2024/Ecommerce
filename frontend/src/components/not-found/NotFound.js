@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const NotFound = ({
 	title = "404",
@@ -43,10 +44,13 @@ const NotFound = ({
 			</div>
 
 			<div className='w-full lg:w-1/2 flex justify-center items-center p-4'>
-				<img
-					src={"/images/error/shopping.svg"}
+				<Image
+					src='/images/error/shopping.svg'
 					alt='Not Found Illustration'
+					width={600}
+					height={600}
 					className='max-h-[600px] w-auto object-contain'
+					priority // Optional: if this is above the fold
 				/>
 			</div>
 		</div>

@@ -107,6 +107,14 @@ const Page = () => {
 		}
 	}, [isSuccess, data, slug]);
 
+	useEffect(() => {
+		if (showMessage) {
+			setTimeout(() => {
+				setShowMessage(false);
+			}, 3000);
+		}
+	}, [showMessage]);
+
 	const handleShare = () => {
 		const shareData = {
 			title: product.name,
@@ -202,10 +210,12 @@ const Page = () => {
 							<div className='flex items-center gap-4'>
 								<span className='text-3xl font-bold text-purple-700'>
 									₹
-									{product.price -
+									{(
+										product.price -
 										product.price *
 											(product.discount /
-												100)}
+												100)
+									).toFixed(2)}
 								</span>
 								{product.discount > 0 && (
 									<>
@@ -488,21 +498,14 @@ const Page = () => {
 			</motion.div>
 
 			{/* Notification Message */}
-			<AnimatePresence>
-				{showMessage && (
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: 20 }}
-						className='fixed top-4 right-4 z-50'>
-						<Message
-							type={messageContent.type}
-							message={messageContent.message}
-							onClose={() => setShowMessage(false)}
-						/>
-					</motion.div>
-				)}
-			</AnimatePresence>
+			{showMessage && (
+				<Message
+					type={"error"}
+					message={messageContent.message}
+					onClose={() => setShowMessage(false)}
+					position='fixed top-20 start-2/5 !w-1/4'
+				/>
+			)}
 		</div>
 	);
 };

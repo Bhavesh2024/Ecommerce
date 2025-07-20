@@ -156,10 +156,6 @@ const Navbar = () => {
 										className='size-10 rounded-full object-fill'
 									/>
 								) : (
-									// <User
-									// 	size={25}
-									// 	className='text-neutral-600'
-									// />
 									<img
 										src={
 											defaultImageUrl

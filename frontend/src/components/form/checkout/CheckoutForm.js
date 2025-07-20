@@ -12,6 +12,14 @@ import PageLoader from "@/components/loader/PageLoader";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import RazorPay from "@/components/payment/RazorPay";
+import { VariantFieldLoader } from "@/components/loader/FieldLoader";
+import PurchaseSummary from "./PurchaseSummary";
+import OrderStep from "./OrderStep";
+// import VariantField from "./VariantField";
+const VariantField = dynamic(() => import("./VariantField"), {
+	loading: () => <VariantFieldLoader />,
+	ssr: true,
+});
 const Modal = dynamic(() => import("@/components/modal/Modal"), {
 	ssr: false,
 	loading: () => <PageLoader />,
@@ -304,59 +312,26 @@ const CheckoutForm = ({ product, user = null }) => {
 																.quantity;
 
 														return (
-															<div
-																key={
+															<VariantField
+																sku={
 																	variant.sku
 																}
-																className='border border-slate-300 p-3 rounded shadow-sm flex justify-between items-center'>
-																<div>
-																	<p className='font-medium'>
-																		{
-																			variant.label
-																		}
-																	</p>
-																	<p className='text-xs text-slate-500'>
-																		₹
-																		{
-																			variant.value
-																		}
-																	</p>
-																</div>
-																<div className='flex items-center space-x-2'>
-																	<button
-																		type='button'
-																		className='px-2 py-1 bg-purple-200 rounded'
-																		onClick={() =>
-																			setFieldValue(
-																				`variants[${formIndex}].quantity`,
-																				Math.max(
-																					0,
-																					quantity -
-																						1,
-																				),
-																			)
-																		}>
-																		–
-																	</button>
-																	<span>
-																		{
-																			quantity
-																		}
-																	</span>
-																	<button
-																		type='button'
-																		className='px-2 py-1 bg-purple-200 rounded'
-																		onClick={() =>
-																			setFieldValue(
-																				`variants[${formIndex}].quantity`,
-																				quantity +
-																					1,
-																			)
-																		}>
-																		+
-																	</button>
-																</div>
-															</div>
+																label={
+																	variant.label
+																}
+																value={
+																	variant.value
+																}
+																setFieldValue={
+																	setFieldValue
+																}
+																quantity={
+																	quantity
+																}
+																formIndex={
+																	formIndex
+																}
+															/>
 														);
 													},
 												)}
@@ -429,7 +404,7 @@ const CheckoutForm = ({ product, user = null }) => {
 								</div>
 
 								{/* Order Summary */}
-								<div className='p-4 border border-slate-300 rounded bg-purple-50 text-sm'>
+								{/* <div className='p-4 border border-slate-300 rounded bg-purple-50 text-sm'>
 									<p className='flex justify-between items-center'>
 										<span className='text-slate-600 font-medium'>
 											Product Total
@@ -480,7 +455,20 @@ const CheckoutForm = ({ product, user = null }) => {
 											).toFixed(2)}
 										</span>
 									</p>
-								</div>
+								</div> */}
+								<PurchaseSummary
+									variantTotal={
+										totals.variantTotal
+									}
+									extrasTotal={
+										totals.extrasTotal
+									}
+									discountAmount={
+										totals.discountAmount
+									}
+									quantity={quantity}
+									total={totals.total}
+								/>
 							</div>
 							{/* RIGHT SIDE: Customer Info + Razorpay + Notes */}
 							<div className='flex flex-col  gap-4'>
@@ -514,7 +502,6 @@ const CheckoutForm = ({ product, user = null }) => {
 											/>
 										</div>
 									</div>
-
 									{/* Address */}
 									<div>
 										<label className='block text-sm font-medium text-slate-700 mb-1'>
@@ -550,7 +537,6 @@ const CheckoutForm = ({ product, user = null }) => {
 										</Field>
 									</div>
 									{/* Razorpay + Notes + Submit */}
-
 									{/* Payment Method */}
 									<div>
 										<label className='block text-sm font-medium text-slate-800 mb-1'>
@@ -566,51 +552,8 @@ const CheckoutForm = ({ product, user = null }) => {
 											</div>
 										</div>
 									</div>
-
 									{/* Purchase Notes */}
-									<div className='bg-purple-50 p-3 rounded text-sm text-slate-800'>
-										<p className='mb-1 font-semibold'>
-											📦 Order
-											Steps:
-										</p>
-										<ol className='list-decimal pl-5 space-y-1'>
-											<li>
-												Confirm
-												your
-												product
-												and
-												quantity.
-											</li>
-											<li>
-												Choose
-												extras
-												(if
-												any).
-											</li>
-											<li>
-												Verify
-												your
-												contact
-												and
-												delivery
-												info.
-											</li>
-											<li>
-												Click
-												"Pay
-												Now" to
-												proceed
-												with
-												Razorpay.
-											</li>
-											<li>
-												Receive
-												confirmation
-												by
-												email.
-											</li>
-										</ol>
-									</div>
+									<OrderStep />
 								</div>
 
 								{/* Submit Button */}

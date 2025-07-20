@@ -8,10 +8,15 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { handleAuth } from "@/utils/api/authApi";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
-import Message from "@/components/popup/Message";
 import { useParams, useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-
+import dynamic from "next/dynamic";
+import MessageLoader from "@/components/loader/MessageLoader";
+import Image from "next/image";
+const Message = dynamic(() => import("@/components/popup/Message"), {
+	ssr: false,
+	loading: () => <MessageLoader />,
+});
 // Yup validation schema
 const LoginSchema = Yup.object().shape({
 	email: Yup.string().email("Invalid email").required("Email is required"),
@@ -52,9 +57,12 @@ const LoginPage = () => {
 			<div className='min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-3 w-full bg-purple-50'>
 				{/* Right column (Image) */}
 				<div className='hidden lg:flex h-screen w-full items-center'>
-					<img
+					<Image
 						src='/images/auth/auth-banner.svg'
 						alt='Banner'
+						loading='lazy'
+						height={100}
+						width={100}
 						className='h-10/12 w-full object-contain'
 					/>
 				</div>

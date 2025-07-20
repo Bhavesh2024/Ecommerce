@@ -4,7 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { InfoCardLoader } from "../loader/CardLoader";
-
+import { sharedStyles } from "@/utils/helper/styles";
 const Contact = dynamic(() => import("@/components/section/Contact"), {
 	loading: () => <InfoCardLoader />,
 	ssr: false,
@@ -26,7 +26,7 @@ export const HelpSection = () => {
 				<div className='flex justify-center'>
 					<Link
 						href='/contact'
-						className='btn-primary'>
+						className={sharedStyles.btnPrimary}>
 						Contact Support
 					</Link>
 				</div>
