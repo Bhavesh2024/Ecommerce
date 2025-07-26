@@ -1,6 +1,6 @@
-// lib/firebaseAdmin.js
 import admin from "firebase-admin";
-const serviceAccount = require("./upsquare-firebase-admin-sdk.json"); // ✅ adjust path as needed
+// const serviceAccount = require("./upsquare-firebase-admin-sdk.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!admin.apps.length) {
 	admin.initializeApp({

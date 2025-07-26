@@ -127,9 +127,20 @@ const UserLayout = ({ children }) => {
 						<NotFound />
 					</div>
 				)}
+			{isSuccess &&
+				user &&
+				user?.role !== "admin" &&
+				!layoutRestrictedRoutesList.includes(path) &&
+				!isForgotPasswordRoute && (
+					<div className='max-h-screen'>
+						<NotFound />
+					</div>
+				)}
 			{!layoutRestrictedRoutesList.includes(path) &&
 				!isForgotPasswordRoute &&
-				isSuccess && (
+				isSuccess &&
+				user &&
+				user?.role == "admin" && (
 					<main className='flex h-screen max-h-screen bg-purple'>
 						{sidebar && (
 							<Sidebar
