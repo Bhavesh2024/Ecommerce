@@ -42,11 +42,11 @@ export const socialMedia = [
 		link: "https://www.instagram.com/upsquare_art?igsh=MWVqeWwwdHJrd2ZudQ==",
 		icon: FaInstagram,
 	},
-	{
-		name: "WhatsApp",
-		link: "https://wa.me/7041656237",
-		icon: FaWhatsapp,
-	},
+	// {
+	// 	name: "WhatsApp",
+	// 	link: "https://wa.me/7041656237",
+	// 	icon: FaWhatsapp,
+	// },
 ];
 
 export const logoImageUrl = "/images/logo/upsquare-art.png";
