@@ -8,7 +8,6 @@ export const initFCM = async () => {
 		const token = await getToken(messaging, {
 			vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
 		});
-		console.log(token);
 		return token;
 	} catch (err) {
 		console.error("FCM error", err);

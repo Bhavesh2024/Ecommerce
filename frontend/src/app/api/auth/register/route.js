@@ -11,7 +11,6 @@ export async function POST(req) {
 		const { name, birthDate, gender, contact, email, password, terms } =
 			await req.json();
 
-		console.log(req.json());
 		const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
 		const formattedDate = new Date(birthDate);
 
@@ -61,7 +60,6 @@ export async function POST(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error("Error:", err.message);
 		return NextResponse.json(
 			{ message: "Something went wrong", error: err.message },
 			{ status: 500 },

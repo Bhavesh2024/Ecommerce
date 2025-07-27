@@ -157,3 +157,97 @@ export const CheckoutFormLoader = () => {
 		</div>
 	);
 };
+
+export const ProductFormLoader = () => {
+	return (
+		<div className='p-4 space-y-6 w-full mx-auto rounded-lg animate-pulse'>
+			{/* Image Upload Section */}
+			<div className='space-y-2'>
+				<div className='h-5 w-32 bg-gray-200 rounded'></div>
+				<div className='h-32 w-full bg-gray-100 rounded-lg'></div>
+			</div>
+
+			{/* Basic Information */}
+			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				{[...Array(6)].map((_, i) => (
+					<div
+						key={i}
+						className='space-y-1'>
+						<div className='h-4 w-24 bg-gray-200 rounded'></div>
+						<div className='h-10 bg-gray-100 rounded-md'></div>
+					</div>
+				))}
+			</div>
+
+			{/* Description */}
+			<div className='space-y-1'>
+				<div className='h-4 w-24 bg-gray-200 rounded'></div>
+				<div className='h-32 bg-gray-100 rounded-md'></div>
+			</div>
+
+			{/* Variants Section */}
+			<div className='space-y-4'>
+				<div className='h-6 w-40 bg-gray-200 rounded'></div>
+				<div className='space-y-4'>
+					{[...Array(2)].map((_, i) => (
+						<div
+							key={i}
+							className='bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-4'>
+							<div className='flex gap-3 items-center'>
+								<div className='flex-1 space-y-2'>
+									<div className='h-4 w-24 bg-gray-200 rounded'></div>
+									<div className='h-10 bg-gray-100 rounded-md'></div>
+								</div>
+								<div className='h-10 w-10 bg-gray-200 rounded-md mt-6'></div>
+							</div>
+
+							<div className='mt-3 space-y-2'>
+								<div className='h-4 w-20 bg-gray-200 rounded'></div>
+								{[...Array(2)].map((_, j) => (
+									<div
+										key={j}
+										className='flex gap-2'>
+										<div className='h-10 bg-gray-100 rounded-md flex-1'></div>
+										<div className='h-10 bg-gray-100 rounded-md flex-1'></div>
+										<div className='h-10 w-10 bg-gray-200 rounded-md'></div>
+									</div>
+								))}
+								<div className='h-10 bg-gray-200 rounded-md mt-2'></div>
+							</div>
+						</div>
+					))}
+					<div className='h-10 bg-gray-200 rounded-md'></div>
+				</div>
+			</div>
+
+			{/* Extras Section */}
+			<div className='space-y-4'>
+				<div className='h-6 w-32 bg-gray-200 rounded'></div>
+				<div className='space-y-3'>
+					{[...Array(2)].map((_, i) => (
+						<div
+							key={i}
+							className='flex gap-2 bg-white p-3 rounded-lg border border-gray-200 shadow-sm'>
+							<div className='h-10 bg-gray-100 rounded-md flex-1'></div>
+							<div className='h-10 bg-gray-100 rounded-md flex-1'></div>
+							<div className='h-10 w-10 bg-gray-200 rounded-md'></div>
+						</div>
+					))}
+					<div className='h-10 bg-gray-200 rounded-md'></div>
+				</div>
+			</div>
+
+			{/* Status and Actions */}
+			<div className='flex items-center justify-between pt-4 border-t border-gray-200'>
+				<div className='flex items-center space-x-3'>
+					<div className='w-11 h-6 bg-gray-200 rounded-full'></div>
+					<div className='h-4 w-24 bg-gray-200 rounded'></div>
+				</div>
+				<div className='flex gap-3'>
+					<div className='h-10 w-24 bg-gray-200 rounded-md'></div>
+					<div className='h-10 w-24 bg-gray-300 rounded-md'></div>
+				</div>
+			</div>
+		</div>
+	);
+};

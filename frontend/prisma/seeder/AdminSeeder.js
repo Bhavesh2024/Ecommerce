@@ -16,8 +16,6 @@ const askQuestion = (question) => {
 
 const createAdmin = async () => {
 	try {
-		console.log("--- Create Admin User ---");
-
 		const name = await askQuestion("Name: ");
 		const email = await askQuestion("Email: ");
 		const passwordInput = await askQuestion("Password: ");
@@ -43,10 +41,7 @@ const createAdmin = async () => {
 				birthDate: birthdate,
 			},
 		});
-
-		console.log("Admin user created successfully:", user);
 	} catch (err) {
-		console.error("Error creating admin user:", err.message);
 	} finally {
 		rl.close();
 		await prisma.$disconnect();

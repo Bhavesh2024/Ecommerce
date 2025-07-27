@@ -52,7 +52,6 @@ export async function POST(req) {
 			return NextResponse.json({ message: "Login Successfully" });
 		}
 	} catch (err) {
-		console.log(err.message);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },
@@ -63,7 +62,7 @@ export async function POST(req) {
 export async function GET() {
 	try {
 		const { value: token } = await cookies().get("upsquareToken");
-		console.log(token);
+
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Token Not Found" },
@@ -95,7 +94,6 @@ export async function GET() {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.log(err.message);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },

@@ -126,7 +126,6 @@ const ResetPasswordPage = () => {
 											email: data.email,
 											password: values.password,
 										};
-										console.log(data);
 										mutate({
 											method: "put",
 											type: "resetPassword",

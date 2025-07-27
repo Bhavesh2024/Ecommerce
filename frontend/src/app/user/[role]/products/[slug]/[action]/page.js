@@ -1,13 +1,27 @@
 "use client";
-import ProductForm from "@/components/form/product/ProductForm";
+import { ProductFormLoader } from "@/components/loader/FormLoader";
+import { ViewProductLoader } from "@/components/loader/LayoutLoader";
 import PageLoader from "@/components/loader/PageLoader";
-import ViewProduct from "@/components/modal/view/ViewProduct";
 import NotFound from "@/components/not-found/NotFound";
 import { useProduct } from "@/hooks/useProduct";
-import { ArrowBigRight, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
-
+const ProductForm = dynamic(
+	() => import("@/components/form/product/ProductForm"),
+	{
+		ssr: true,
+		loading: () => <ProductFormLoader />,
+	},
+);
+const ViewProduct = dynamic(
+	() => import("@/components/modal/view/ViewProduct"),
+	{
+		ssr: true,
+		loading: () => <ViewProductLoader />,
+	},
+);
 const Page = () => {
 	const { role, slug, action } = useParams();
 	const { data, isSuccess, isError, isLoading } = useProduct(
@@ -15,23 +29,19 @@ const Page = () => {
 		slug === "new" ? null : slug,
 	);
 	const router = useRouter();
-
 	const renderProductAction = (action, productData) => {
-		switch (action) {
-			case "view":
-				return <ViewProduct data={productData} />;
-			case "add":
-				return <ProductForm action='add' />;
-			case "edit":
-				return (
-					<ProductForm
-						action='edit'
-						data={productData}
-					/>
-				);
-			default:
-				return <NotFound message='Invalid action' />;
-		}
+		const actionMap = {
+			view: <ViewProduct data={productData} />,
+			add: <ProductForm action='add' />,
+			edit: (
+				<ProductForm
+					action='edit'
+					data={productData}
+				/>
+			),
+		};
+
+		return actionMap[action] || <NotFound message='Invalid action' />;
 	};
 
 	return (

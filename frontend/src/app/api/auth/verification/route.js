@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function POST(req) {
 	try {
 		const { email, role } = await req.json();
-		console.log(email);
+
 		const user = await prisma.user.findFirst({
 			where: {
 				email,

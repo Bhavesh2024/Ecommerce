@@ -7,20 +7,38 @@ import {
 import { useOrder } from "@/hooks/useOrder";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
 import PageLoader from "@/components/loader/PageLoader";
-import Alert from "@/components/modal/alert/Alert";
-import Modal from "@/components/modal/Modal";
-import Response from "@/components/modal/response/Response";
-import ViewOrder from "@/components/modal/view/ViewOrder";
-import DataTable from "@/components/table/DataTable";
 import { handleOrder } from "@/utils/api/orderApi";
 import { orderStatuses, paymentStatuses } from "@/utils/helper/status";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import NoItem from "@/components/not-found/NoItem";
-import { Package, Truck } from "lucide-react";
+import { Truck } from "lucide-react";
 import Header from "@/components/header/Header";
 import { formatPrice } from "@/utils/helper/formatter";
+import dynamic from "next/dynamic";
+import { NoItemLoader } from "@/components/loader/ItemLoader";
+import DataTableLoader from "@/components/loader/DataTableLoader";
+const NoItem = dynamic(() => import("@/components/not-found/NoItem"), {
+	ssr: true,
+	loading: () => <NoItemLoader />,
+});
+
+const Modal = dynamic(() => import("@/components/modal/Modal"), {
+	ssr: false,
+});
+
+const Response = dynamic(() => import("@/components/modal/response/Response"), {
+	ssr: false,
+});
+
+const Alert = dynamic(() => import("@/components/modal/alert/Alert"), {
+	ssr: false,
+});
+
+const DataTable = dynamic(() => import("@/components/table/DataTable"), {
+	ssr: true,
+	loading: () => <DataTableLoader />,
+});
 
 const page = () => {
 	const { data, isSuccess, isError, isLoading } = useOrder(true, "all");
@@ -37,7 +55,7 @@ const page = () => {
 		startLoading,
 	} = usePopupMessage();
 	const { addAllItem, updateItem } = useAdminStoreActions();
-	const [openView, setOpenView] = useState(false);
+	// const [openView, setOpenView] = useState(false);
 	const [currentOrder, setCurrentOrder] = useState(null);
 	const [selectedStatus, setSelectedStatus] = useState("");
 	const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -190,14 +208,14 @@ const page = () => {
 		},
 	];
 
-	const handleOrderView = (data) => {
-		setCurrentOrder(data);
-		setOpenView(true);
-	};
+	// const handleOrderView = (data) => {
+	// 	setCurrentOrder(data);
+	// 	setOpenView(true);
+	// };
 
-	const handleCloseView = () => {
-		setOpenView(false);
-	};
+	// const handleCloseView = () => {
+	// 	setOpenView(false);
+	// };
 	return (
 		<>
 			{isLoading && <PageLoader />}{" "}
@@ -230,7 +248,7 @@ const page = () => {
 				</>
 			)}
 			{/* Order View */}
-			<Modal
+			{/* <Modal
 				open={openView}
 				onClose={handleCloseView}>
 				<div className='w-full text-nowrap max-w-xl min-h-60'>
@@ -239,7 +257,7 @@ const page = () => {
 						onClose={handleCloseView}
 					/>
 				</div>
-			</Modal>
+			</Modal> */}
 			{/* Confirm Alert */}
 			<Modal
 				open={openConfirmation}

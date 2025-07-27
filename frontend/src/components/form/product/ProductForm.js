@@ -3,19 +3,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import * as Yup from "yup";
-import { CloudUpload, Plus, Trash, Upload, X, ChevronDown } from "lucide-react";
+import { Plus, Trash, Upload, X, ChevronDown } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { handleProduct } from "@/utils/api/productApi";
-import useAdminStore, {
-	useAdminStoreActions,
-	useAdminStoreState,
-} from "@/hooks/store/useAdminStore";
-import Message from "@/components/popup/Message";
+import { useAdminStoreActions } from "@/hooks/store/useAdminStore";
 import { usePopupMessage } from "@/hooks/usePopupMessage";
 import Modal from "@/components/modal/Modal";
 import PageLoader from "@/components/loader/PageLoader";
 import Response from "@/components/modal/response/Response";
 import { useParams, useRouter } from "next/navigation";
+import { categories } from "@/utils/helper/category";
 
 const ProductForm = ({ action = "add", data = null, onClose }) => {
 	const imageRef = useRef();
@@ -35,20 +32,6 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 		startLoading,
 	} = usePopupMessage();
 	// Art & Design related categories
-	const categories = [
-		"Painting",
-		"Drawing",
-		"Sculpture",
-		"Photography",
-		"Digital Art",
-		"Printmaking",
-		"Textile Art",
-		"Ceramics",
-		"Jewelry",
-		"Graphic Design",
-		"Illustration",
-		"Mixed Media",
-	];
 	const initialValues = {
 		title: data ? data.name : "",
 		category: data ? data.category : "",
@@ -64,15 +47,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 		status: data ? data.status : false,
 	};
 
-	// Admin Store State
-	const { products } = useAdminStoreState();
 	const { addItem, updateItem } = useAdminStoreActions();
 
 	const {
 		mutate: productMutation,
 		isPending: isPendingProduct,
-		isLoading: isLoadingProduct,
-		isError: isErrorProduct,
 		isSuccess: isSuccessProduct,
 	} = useMutation({
 		mutationFn: handleProduct,
@@ -90,7 +69,6 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 			}
 		},
 		onError: function (err) {
-			console.log(err);
 			showError(err);
 		},
 	});
@@ -264,8 +242,6 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 							order: image.order,
 						}));
 
-					console.log(productImages);
-
 					const formData = new FormData();
 					if (
 						Array.isArray(productImages) &&
@@ -357,18 +333,42 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 											hidden
 											ref={imageRef}
 											multiple
-											max={5}
 											onChange={(
 												event,
 											) => {
-												const files =
+												const selectedFiles =
 													Array.from(
 														event
 															.target
 															.files,
 													);
+
+												const currentCount =
+													values
+														.images
+														.length;
+												const allowedCount =
+													5 -
+													currentCount;
+
+												if (
+													allowedCount <=
+													0
+												) {
+													alert(
+														"You can upload a maximum of 5 images.",
+													);
+													return;
+												}
+
+												const filesToProcess =
+													selectedFiles.slice(
+														0,
+														allowedCount,
+													);
+
 												const readers =
-													files.map(
+													filesToProcess.map(
 														(
 															file,
 															index,
@@ -388,9 +388,7 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 																					file: file,
 																					label: "",
 																					order:
-																						values
-																							.images
-																							.length +
+																						currentCount +
 																						index +
 																						1,
 																					isThumbnail: false,
@@ -617,19 +615,22 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 														a
 														category
 													</option>
-													{categories.map(
-														(
-															category,
-														) => (
+													{Object.entries(
+														categories,
+													).map(
+														([
+															key,
+															value,
+														]) => (
 															<option
 																key={
-																	category
+																	key
 																}
 																value={
-																	category
+																	key
 																}>
 																{
-																	category
+																	value
 																}
 															</option>
 														),

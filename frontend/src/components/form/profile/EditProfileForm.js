@@ -134,7 +134,6 @@ const EditProfileForm = ({ initialData }) => {
 				data: payload,
 			});
 		}
-		console.log("Updated Profile:", values);
 		// Send `values` and `profileImage` to server here
 	};
 
@@ -154,9 +153,6 @@ const EditProfileForm = ({ initialData }) => {
 		}
 	}, [isUploaded, profileImage]);
 
-	useEffect(() => {
-		console.log("initial data", initialData);
-	}, []);
 	return (
 		<div className='w-full max-w-3xl mx-auto p-6 text-center md:text-start'>
 			<h2 className='text-2xl font-semibold mb-1 text-purple-700'>

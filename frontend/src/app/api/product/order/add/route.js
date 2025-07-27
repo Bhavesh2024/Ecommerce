@@ -263,27 +263,14 @@ export async function POST(req) {
 				const paymentInfo = await razorpay.payments.fetch(
 					razorpayId,
 				);
-				console.log("Payment Status:", paymentInfo.status);
 
 				if (paymentInfo.status === "captured") {
 					await razorpay.payments.refund(razorpayId, {
 						speed: "optimum",
 					});
-					console.log(
-						"Refund initiated for payment:",
-						razorpayId,
-					);
 				} else {
-					console.log(
-						"No refund needed, payment not captured.",
-					);
 				}
-			} catch (refundErr) {
-				console.error(
-					"Refund Attempt Failed:",
-					refundErr.message,
-				);
-			}
+			} catch (refundErr) {}
 		}
 		return NextResponse.json(
 			{ message: "Internal Server Error", err },

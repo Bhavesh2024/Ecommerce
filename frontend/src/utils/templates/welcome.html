@@ -25,12 +25,14 @@
 			}
 			.header {
 				padding: 10px;
-				text-align: center;
+				padding-bottom: 0;
+				/* text-align: center; */
 			}
 			.header img {
-				height: 50px;
-				border-radius: 100%;
-				width: 50px;
+				height: 60px;
+				/* border-radius: 100%; */
+				width: 150px;
+				object-fit: cover;
 			}
 			.title {
 				font-size: 22px;
@@ -39,6 +41,7 @@
 			}
 			.content {
 				padding: 20px;
+				padding-top: 5px;
 			}
 			.greeting {
 				font-size: 18px;
@@ -77,6 +80,7 @@
 			<div class="header">
 				<img
 					src="{{logo}}"
+					class="logo"
 					alt="Upsquare Art Logo" />
 				<div class="title">Welcome to Upsquare Art!</div>
 			</div>

@@ -34,7 +34,7 @@ export default function RazorPay({
 			name: "Upsquare",
 			handler: function (response) {
 				const { razorpay_payment_id } = response;
-				console.log("payresponse", response);
+
 				paymentExtract(razorpay_payment_id);
 			},
 			prefill: {

@@ -1,12 +1,9 @@
 "use client";
 
 import Header from "@/components/header/Header";
+import DataTableLoader from "@/components/loader/DataTableLoader";
+import { NoItemLoader } from "@/components/loader/ItemLoader";
 import PageLoader from "@/components/loader/PageLoader";
-import Alert from "@/components/modal/alert/Alert";
-import Modal from "@/components/modal/Modal";
-import Response from "@/components/modal/response/Response";
-import NoItem from "@/components/not-found/NoItem";
-import DataTable from "@/components/table/DataTable";
 import {
 	useAdminStoreActions,
 	useAdminStoreState,
@@ -15,10 +12,31 @@ import { usePopupMessage } from "@/hooks/usePopupMessage";
 import { useUser } from "@/hooks/useUser";
 import { handleUser } from "@/utils/api/userApi";
 import { useMutation } from "@tanstack/react-query";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
 import { Users as People } from "lucide-react";
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+const DataTable = dynamic(() => import("@/components/table/DataTable"), {
+	ssr: true,
+	loading: () => <DataTableLoader />,
+});
 
+const Modal = dynamic(() => import("@/components/modal/Modal"), {
+	ssr: false,
+});
+
+const Response = dynamic(() => import("@/components/modal/response/Response"), {
+	ssr: false,
+});
+
+const Alert = dynamic(() => import("@/components/modal/alert/Alert"), {
+	ssr: false,
+});
+
+const NoItem = dynamic(() => import("@/components/not-found/NoItem"), {
+	ssr: true,
+	loading: () => <NoItemLoader />,
+});
 const Users = () => {
 	const { data, isSuccess, isLoading, isError } = useUser(true, "all");
 	const { users } = useAdminStoreState();

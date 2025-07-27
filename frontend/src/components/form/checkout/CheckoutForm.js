@@ -98,7 +98,6 @@ const CheckoutForm = ({ product, user = null }) => {
 	const calculateTotal = (values) => {
 		let variantTotal = 0;
 		let totalUnits = 0;
-		// console.log(values);
 
 		if (!values.variants) {
 			variantTotal = product.price;
@@ -202,7 +201,6 @@ const CheckoutForm = ({ product, user = null }) => {
 			type: "add",
 			data: { ...payload },
 		});
-		console.log("Final Checkout Payload:", payload);
 		// Send to API here
 	};
 

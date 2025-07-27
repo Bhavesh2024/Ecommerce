@@ -36,8 +36,9 @@ const Hero = () => {
 
 					<p className='md:text-xl max-w-[80%] text-wrap text-gray-600 mb-10 md:max-w-2xl mx-auto leading-relaxed'>
 						Explore handcrafted wooden art, expressive
-						jewelry, and matching couple wear — all made
-						with care, creativity, and a touch of soul.
+						jewellery, and matching couple wear — all
+						made with care, creativity, and a touch of
+						soul.
 					</p>
 
 					<div className='flex flex-col sm:flex-row gap-4 justify-center px-4 max-w-[90%] mx-auto'>

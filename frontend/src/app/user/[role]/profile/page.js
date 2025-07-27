@@ -33,9 +33,6 @@ const Page = () => {
 		}
 	}, [data, isSuccess]);
 
-	useEffect(() => {
-		console.log(user);
-	}, [user]);
 	return (
 		<>
 			{isLoading && <PageLoader />}

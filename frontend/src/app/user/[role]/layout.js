@@ -56,9 +56,6 @@ const UserLayout = ({ children }) => {
 			onSuccess: (data) => {
 				router.push("/user/admin/auth/login");
 			},
-			onError: (error) => {
-				console.log("Error", error.message);
-			},
 		});
 
 	/* Handler Method */
@@ -91,12 +88,6 @@ const UserLayout = ({ children }) => {
 
 	const { mutate: notificationMutation } = useMutation({
 		mutationFn: handleNotification,
-		onSuccess: (data) => {
-			console.log("Notification Enabled");
-		},
-		onError: (error) => {
-			console.log("Error", error.message);
-		},
 	});
 
 	useEffect(() => {

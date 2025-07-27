@@ -18,7 +18,7 @@ export const handleProduct = async ({
 			product: `/${id}`,
 		};
 		const endpoint = baseEndpoint + endpoints[type];
-		console.log(data);
+
 		const response = data
 			? await axiosInstance[method](endpoint, data, config)
 			: await axiosInstance[method](endpoint, config);

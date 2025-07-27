@@ -129,12 +129,7 @@ const SignupPage = () => {
 										type: "register",
 										data: values,
 									});
-								} catch (err) {
-									console.log(
-										"Error",
-										err.message,
-									);
-								}
+								} catch (err) {}
 							}}>
 							{({
 								isSubmitting,

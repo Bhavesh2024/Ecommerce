@@ -7,4 +7,21 @@ const InfoCard = ({ Icon, title, content }) => (
 		<div className='text-gray-600 text-sm text-center'>{content}</div>
 	</div>
 );
+
+export const ProductInfoCard = ({
+	title,
+	value,
+	icon: Icon,
+	className = "",
+	valueClassName = "",
+}) => (
+	<div className={className}>
+		<p className='text-sm text-gray-500 flex items-center gap-1'>
+			{Icon && <Icon className='w-4 h-4' />}
+			{title}
+		</p>
+		<p className={`font-medium ${valueClassName}`}>{value}</p>
+	</div>
+);
+
 export default InfoCard;

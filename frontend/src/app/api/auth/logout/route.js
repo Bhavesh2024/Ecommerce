@@ -9,7 +9,7 @@ const SECRET_KEY = process.env.JWT_SECRET_KEY;
 export async function POST(req) {
 	try {
 		const { value: token } = cookies().get("upsquareToken");
-		console.log(token);
+
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Token Not Found" },
@@ -42,7 +42,6 @@ export async function POST(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.log(err.message);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },

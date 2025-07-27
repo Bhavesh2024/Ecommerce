@@ -98,13 +98,13 @@ export default function Home() {
 			{/* Detailed Contact */}
 			<section className='py-12 px-6'>
 				<div className='max-w-4xl mx-auto text-center'>
-					<h2 className='text-2xl font-semibold text-gray-800 mb-2'>
-						Work With Us
+					<h2 className='text-2xl font-semibold text-gray-800 mb-2 text-center'>
+						Connect With Us
 					</h2>
-					<p className='text-gray-600 mb-8 max-w-xl mx-auto'>
-						We accept custom orders and collaborate with
-						artists. Visit our studio or reach out:
-					</p>
+					<p className='text-gray-600 mb-8 max-w-xl mx-auto text-center'>
+						Have questions or need help? We're here for
+						you. Reach out to us anytime!
+					</p>{" "}
 					<Contact />
 					<Link
 						href={"/contact"}

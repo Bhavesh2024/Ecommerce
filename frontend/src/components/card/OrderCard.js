@@ -10,7 +10,6 @@ import { OrderSummaryLoader } from "../loader/CardLoader";
 
 const Modal = dynamic(() => import("../modal/Modal"), {
 	ssr: false,
-	loading: () => <PageLoader />,
 });
 const OrderSummary = dynamic(() => import("./OrderSummary"), {
 	ssr: false,

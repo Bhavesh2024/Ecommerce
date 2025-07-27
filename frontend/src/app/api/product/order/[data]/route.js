@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export async function GET(req, { params }) {
 	try {
 		const { data } = params;
-		console.log("Incoming data:", data);
 
 		let order = null;
 
@@ -89,7 +88,6 @@ export async function GET(req, { params }) {
 			order: orderDetail,
 		});
 	} catch (err) {
-		console.log(err.message);
 		return NextResponse.json(
 			{ message: "Internal Server Error", error: err.message },
 			{ status: 500 },

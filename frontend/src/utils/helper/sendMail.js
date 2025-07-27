@@ -47,7 +47,7 @@ export const sendMail = async ({
 
 		// Default replacements
 		const defaultReplacements = {
-			logo: "https://res.cloudinary.com/dyu19wgl0/image/upload/v1742731965/glaxora/fgjtuykryd5v08k3zia4.jpg",
+			logo: "https://res.cloudinary.com/dupfvnsnu/image/upload/v1753596055/upsquare-art_poqhfv.png",
 			year: new Date().getFullYear(),
 		};
 

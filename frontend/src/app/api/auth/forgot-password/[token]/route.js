@@ -13,13 +13,10 @@ export async function GET(req, { params }) {
 				{ status: 400 },
 			);
 		}
-		console.log("my", token);
 
 		const user = await prisma.user.findFirst({
 			where: { token: token },
 		});
-
-		console.log("user", user);
 
 		if (!user) {
 			return NextResponse.json(
@@ -36,7 +33,6 @@ export async function GET(req, { params }) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.log(err);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },

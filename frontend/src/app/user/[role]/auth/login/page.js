@@ -91,10 +91,6 @@ const LoginPage = () => {
 							}}
 							validationSchema={LoginSchema}
 							onSubmit={async (values) => {
-								console.log(
-									"Submitted Data:",
-									values,
-								);
 								try {
 									const data = {
 										...values,
@@ -181,7 +177,7 @@ const LoginPage = () => {
 										<div className='flex justify-end'>
 											<Link
 												href={`/user/${role}/auth/verification`}
-												className='text-purple-700 hover:text-purple-500 text-xs flex ms-auto'>
+												className='text-purple-700 mt-2 hover:text-purple-500 text-xs flex ms-auto'>
 												Forgot
 												Password
 												?

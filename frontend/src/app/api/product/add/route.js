@@ -28,7 +28,6 @@ export async function POST(req) {
 				slug: slug,
 			},
 		});
-		console.log(isExist);
 
 		if (isExist) {
 			return NextResponse.json(
@@ -68,7 +67,6 @@ export async function POST(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error("Error:", err.message);
 		return NextResponse.json(
 			{ message: "Something went wrong", error: err.message },
 			{ status: 500 },

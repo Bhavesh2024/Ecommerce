@@ -67,9 +67,9 @@ const ProductPage = () => {
 				<Navbar />
 			</div>
 
-			<div className='min-h-screen pt-24 pb-12'>
+			<div className='min-h-[60vh] pt-24 pb-12'>
 				<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
-					{/* Enhanced Animated Header with Category Icons */}
+					{/* Header with Category Icons */}
 					<motion.div
 						initial={{ opacity: 0, y: -20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -114,22 +114,28 @@ const ProductPage = () => {
 						<div className='w-full h-px bg-gradient-to-r from-transparent via-purple-200 to-transparent'></div>
 					</motion.div>
 
+					{/* --- Conditional Content Rendering --- */}
+
 					{isLoading && <PageLoader />}
+
 					{isError && (
 						<NoItem
-							icon={<Package />}
-							message={"No Products Found"}
+							icon={
+								<Package className='size-20 text-slate-500' />
+							}
+							message='No Products Found'
 						/>
 					)}
-					{/* Product Grid */}
-					{isSuccess ? (
+
+					{isSuccess && products.length > 0 && (
 						<ProductGrid products={products} />
-					) : (
-						<div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-							{[...Array(8)].map((_, index) => (
-								<ProductCardLoader />
-							))}
-						</div>
+					)}
+
+					{isSuccess && products.length === 0 && (
+						<NoItem
+							icon={<Package />}
+							message='No products available right now.'
+						/>
 					)}
 				</div>
 			</div>

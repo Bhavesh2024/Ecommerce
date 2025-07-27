@@ -10,40 +10,44 @@
 			body {
 				margin: 0;
 				padding: 0;
-				background: #f3f4f6;
+				background: #f9fafb;
 				font-family: Arial, sans-serif;
-				color: #1f2937;
+				color: #111827;
 			}
 			.container {
 				max-width: 600px;
 				margin: 20px auto;
-				background: #fff;
-				border-radius: 10px;
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				background: #ffffff;
+				border-radius: 8px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 				overflow: hidden;
-				border-top: 5px solid #7c3aed;
+				border-left: 5px solid #7c3aed;
 			}
 			.header {
-				padding: 10px;
+				padding: 20px;
+				border-bottom: 1px solid #e5e7eb;
+				background-color: #f3f4f6;
+				text-align: center;
 			}
 			.header img {
-				height: 50px;
-				border-radius: 100%;
-				width: 50px;
+				height: 60px;
+				width: 150px;
+				object-fit: cover;
+				margin-bottom: 10px;
 			}
-			.title {
-				font-size: 20px;
+			.header h2 {
+				margin: 0;
 				color: #7c3aed;
-				margin-top: 10px;
+				font-size: 20px;
 			}
 			.content {
 				padding: 20px;
 			}
-			.info {
-				background: #f3f4f6;
-				border-radius: 6px;
-				padding: 15px;
-				margin-bottom: 20px;
+			.description {
+				font-size: 15px;
+				color: #374151;
+				margin-bottom: 15px;
+				line-height: 1.6;
 			}
 			.info p {
 				margin: 8px 0;
@@ -55,11 +59,13 @@
 			}
 			.message-box {
 				background: #f3e8ff;
-				border: 2px dashed #7c3aed;
+				border-left: 4px solid #7c3aed;
 				padding: 15px;
 				border-radius: 6px;
 				color: #4b5563;
 				font-size: 15px;
+				margin-top: 15px;
+				white-space: pre-line;
 			}
 			.footer {
 				font-size: 12px;
@@ -67,17 +73,10 @@
 				padding: 15px 20px;
 				text-align: center;
 				background: #f9fafb;
+				border-top: 1px solid #e5e7eb;
 			}
 			.hidden {
 				display: none;
-			}
-			@media (max-width: 600px) {
-				.container {
-					margin: 10px;
-				}
-				.title {
-					font-size: 18px;
-				}
 			}
 		</style>
 	</head>
@@ -87,8 +86,23 @@
 				<img
 					src="{{logo}}"
 					alt="Upsquare Art Logo" />
+				<h2>New Contact Request</h2>
 			</div>
+
 			<div class="content">
+				<p class="description">
+					You’ve received a new message from someone who
+					submitted the contact form on your website. Please
+					review their details below and respond if
+					necessary.
+				</p>
+				<p class="description">
+					This message was sent by a visitor using your
+					website’s contact page. If you're unsure how to
+					reply, you can simply copy their email and message
+					and respond directly using your email account.
+				</p>
+
 				<div class="info">
 					<p><strong>Name:</strong> {{name}}</p>
 					<p><strong>Email:</strong> {{email}}</p>
@@ -96,11 +110,13 @@
 						<strong>Phone:</strong> {{phone}}
 					</p>
 				</div>
+
 				<div class="message-box">
 					<strong>Message:</strong><br />
 					{{message}}
 				</div>
 			</div>
+
 			<div class="footer">
 				&copy; {{year}} Upsquare Art. All rights reserved.
 			</div>

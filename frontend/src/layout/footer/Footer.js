@@ -6,7 +6,9 @@ import {
 	phoneNumbers,
 	location,
 	socialMedia,
+	logoImageUrl,
 } from "@/utils/helper/web-content";
+import Image from "next/image";
 const Footer = () => {
 	const [phoneNumber] = phoneNumbers;
 	return (
@@ -14,11 +16,20 @@ const Footer = () => {
 			<div className='max-w-7xl mx-auto px-4 md:px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-8'>
 				{/* Logo Section */}
 				<div>
-					<h1 className='text-3xl font-semibold font-logo text-neutral-900 mb-3'>
+					{/* <h1 className='text-3xl font-semibold font-logo text-neutral-900 mb-3'>
 						Upsquare
-					</h1>
+					</h1> */}
+					<div className='flex justify-start'>
+						<Image
+							src={logoImageUrl}
+							height={80}
+							width={180}
+							alt='Upsquare Art Logo'
+							className='h-16 w-40 object-cover -ms-5'
+						/>
+					</div>
 					<p className='text-sm text-neutral-700'>
-						Your trusted eCommerce partner for quality
+						Your new eCommerce destination for quality
 						products.
 					</p>
 				</div>
@@ -59,28 +70,34 @@ const Footer = () => {
 						Contact Us
 					</h2>
 					<ul className='space-y-3 text-sm'>
-						<li className='flex items-center gap-2 hover:text-purple-500'>
+						<Link
+							href={emailAddress.link}
+							className='flex items-center gap-2 hover:text-purple-500'>
 							<emailAddress.icon
 								size={18}
 								className=' hover:text-purple-500'
 							/>
 							{emailAddress.email}
-						</li>
-						<li className='flex items-center gap-2 hover:text-purple-500'>
+						</Link>
+						<Link
+							href={phoneNumber.link}
+							className='flex items-center gap-2 hover:text-purple-500'>
 							<phoneNumber.icon
 								size={18}
 								className=' hover:text-purple-500'
 							/>
 							{phoneNumber.countryCode}{" "}
 							{phoneNumber.phone}
-						</li>
-						<li className='flex items-center gap-2 hover:text-purple-500'>
+						</Link>
+						<Link
+							href={location.link}
+							className='flex items-center gap-2 hover:text-purple-500'>
 							<location.icon
 								size={18}
 								className=' hover:text-purple-500'
 							/>
 							{location.address}
-						</li>
+						</Link>
 					</ul>
 				</div>
 				<div>

@@ -31,7 +31,7 @@ const OrderSummary = ({
 }) => {
 	if (!order)
 		return <div className='text-gray-500'>No order selected.</div>;
-	console.log(order);
+
 	const {
 		orderId,
 		orderItem,

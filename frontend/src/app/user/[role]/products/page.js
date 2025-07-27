@@ -9,17 +9,41 @@ import { useProduct } from "@/hooks/useProduct";
 import ProductForm from "@/components/form/product/ProductForm";
 import Header from "@/components/header/Header";
 import PageLoader from "@/components/loader/PageLoader";
-import Alert from "@/components/modal/alert/Alert";
-import Modal from "@/components/modal/Modal";
-import Response from "@/components/modal/response/Response";
-import ViewProduct from "@/components/modal/view/ViewProduct";
-import DataTable from "@/components/table/DataTable";
+// import Alert from "@/components/modal/alert/Alert";
+// import Modal from "@/components/modal/Modal";
+// import Response from "@/components/modal/response/Response";
+// import ViewProduct from "@/components/modal/view/ViewProduct";
+// import DataTable from "@/components/table/DataTable";
 import { handleProduct } from "@/utils/api/productApi";
 import { useMutation } from "@tanstack/react-query";
 import { Package, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import NoItem from "@/components/not-found/NoItem";
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import DataTableLoader from "@/components/loader/DataTableLoader";
+import { NoItemLoader } from "@/components/loader/ItemLoader";
+import { categories } from "@/utils/helper/category";
+const DataTable = dynamic(() => import("@/components/table/DataTable"), {
+	ssr: true,
+	loading: () => <DataTableLoader />,
+});
+
+const Modal = dynamic(() => import("@/components/modal/Modal"), {
+	ssr: false,
+});
+
+const Response = dynamic(() => import("@/components/modal/response/Response"), {
+	ssr: false,
+});
+
+const Alert = dynamic(() => import("@/components/modal/alert/Alert"), {
+	ssr: false,
+});
+
+const NoItem = dynamic(() => import("@/components/not-found/NoItem"), {
+	ssr: true,
+	loading: () => <NoItemLoader />,
+});
 
 const page = () => {
 	const { role } = useParams();
@@ -63,11 +87,11 @@ const page = () => {
 			showError(err);
 		},
 	});
-	const handleProductForm = (action, data = null) => {
-		setAction(action);
-		setProductData(data);
-		setOpenProductForm(true);
-	};
+	// const handleProductForm = (action, data = null) => {
+	// 	setAction(action);
+	// 	setProductData(data);
+	// 	setOpenProductForm(true);
+	// };
 	const [alert, setAlert] = useState(false);
 	const productDataCol = [
 		{
@@ -93,6 +117,7 @@ const page = () => {
 		{
 			key: "category",
 			name: "Category",
+			render: (val) => categories[val] || val,
 		},
 		{
 			key: "stockCount",
@@ -194,8 +219,11 @@ const page = () => {
 				/>
 				{/* Product Table*/}
 				<div className='w-full'>
-					{isLoading && <PageLoader />}
-					{isError && (
+					{isLoading && <DataTableLoader />}
+					{(isError ||
+						(isSuccess &&
+							products &&
+							products.length <= 0)) && (
 						<NoItem
 							message={"No Products Found"}
 							icon={
@@ -203,7 +231,8 @@ const page = () => {
 							}
 						/>
 					)}
-					{isSuccess && products && (
+
+					{isSuccess && products && products.length > 0 && (
 						<DataTable
 							data={productDataCol}
 							values={products}
@@ -260,14 +289,14 @@ const page = () => {
 					/>
 				)}
 			</Modal>
-			<Modal
+			{/* <Modal
 				open={openView}
 				onClose={() => setOpenView(false)}>
 				<ViewProduct
 					data={currentProduct}
 					onClose={() => setOpenView(false)}
 				/>
-			</Modal>
+			</Modal> */}
 		</>
 	);
 };

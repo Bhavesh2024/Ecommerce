@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function GET(req) {
 	try {
 		const token = await cookies().get("upsquareToken");
-		console.log(token);
+
 		const allProducts = await prisma.product.findMany({
 			orderBy: {
 				id: "desc",
@@ -80,7 +80,6 @@ export async function GET(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error("Error:", err.message);
 		return NextResponse.json(
 			{ message: "Something went wrong", error: err.message },
 			{ status: 500 },

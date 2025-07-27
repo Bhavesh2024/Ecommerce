@@ -27,6 +27,7 @@ import {
 } from "@/components/loader/ProductLoader";
 import { generateOptimizedUrl } from "@/utils/helper/generator";
 import Image from "next/image";
+import { categories } from "@/utils/helper/category";
 const PricingTable = dynamic(() =>
 	import("@/components/product/PricingTable", {
 		ssr: true,
@@ -122,9 +123,7 @@ const Page = () => {
 		};
 
 		if (navigator.share) {
-			navigator
-				.share(shareData)
-				.catch((err) => console.log("Share failed:", err));
+			navigator.share(shareData);
 		} else {
 			navigator.clipboard.writeText(shareData.url);
 			setMessageContent({
@@ -186,7 +185,9 @@ const Page = () => {
 								transition={{ delay: 0.15 }}
 								className='mt-2 flex gap-2 items-center'>
 								<span className='px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800'>
-									{product.category}
+									{categories[
+										product.category
+									] || product.category}
 								</span>
 								<span
 									className={`px-3 py-1 rounded-full text-xs font-medium ${

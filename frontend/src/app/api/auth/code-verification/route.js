@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function POST(req) {
 	try {
 		const { otp } = await req.json();
-		console.log(otp);
+
 		const user = await prisma.user.findFirst({
 			where: { otp: otp },
 		});
@@ -39,7 +39,6 @@ export async function POST(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.log(err);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },

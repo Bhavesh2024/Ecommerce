@@ -10,7 +10,8 @@ import { handleAuth } from "@/utils/api/authApi";
 import useCustomerStore, {
 	useCustomerStoreState,
 } from "@/hooks/store/useCustomerStore";
-import { defaultImage, defaultImageUrl } from "@/utils/helper/web-content";
+import { defaultImageUrl, logoImageUrl } from "@/utils/helper/web-content";
+import Image from "next/image";
 
 const Navbar = () => {
 	const pathname = usePathname();
@@ -24,9 +25,6 @@ const Navbar = () => {
 		mutationFn: handleAuth,
 		onSuccess: (data) => {
 			router.push("/user/customer/auth/login");
-		},
-		onError: (err) => {
-			console.log(err);
 		},
 	});
 	const pagesList = [
@@ -54,9 +52,7 @@ const Navbar = () => {
 	const handleLogout = async () => {
 		try {
 			mutate({ method: "post", type: "logout" });
-		} catch (err) {
-			console.log("Error:-", err.message);
-		}
+		} catch (err) {}
 	};
 
 	const handleUserDropdown = (e) => {
@@ -93,11 +89,18 @@ const Navbar = () => {
 			<div className='flex items-center justify-between px-4  md:px-8 h-20'>
 				{/* Logo */}
 				<div
-					className='h-full flex items-center justify-center'
+					className='h-full  p-3 flex items-center justify-center'
 					onClick={() => router.push("/")}>
-					<h1 className='text-2xl md:text-3xl font-semibold font-logo'>
+					{/* <h1 className='text-2xl md:text-3xl font-semibold font-logo'>
 						Upsquare
-					</h1>
+					</h1> */}
+					<Image
+						src={logoImageUrl}
+						height={40}
+						width={150}
+						alt='Upsquare Art Logo'
+						className='h-[60px] object-cover'
+					/>
 				</div>
 
 				{/* Desktop Nav */}

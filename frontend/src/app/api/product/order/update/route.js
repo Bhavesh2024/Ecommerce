@@ -14,13 +14,13 @@ const prisma = new PrismaClient();
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export async function PUT(req) {
-	const step = (msg) => console.log(`[Order Update] ${msg}`);
+	const step = (msg) => `[Order Update] ${msg}`;
 
 	try {
 		const data = await req.json();
 		const { id, orderStatus, paymentStatus } = data;
 		const { value: token } = await cookies().get("upsquareToken");
-		console.log(token);
+		token;
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Token Not Found" },

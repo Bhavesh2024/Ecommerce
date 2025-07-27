@@ -4,15 +4,23 @@ import React, { useEffect } from "react";
 import { usePayment } from "@/hooks/usePayment";
 import Header from "@/components/header/Header";
 import PageLoader from "@/components/loader/PageLoader";
-import NoItem from "@/components/not-found/NoItem";
-import DataTable from "@/components/table/DataTable";
 import {
 	useAdminStoreActions,
 	useAdminStoreState,
 } from "@/hooks/store/useAdminStore";
-import { paymentStatuses, razorpayStatus } from "@/utils/helper/status";
-import { Wallet2, WalletCards } from "lucide-react";
-
+import { paymentStatuses } from "@/utils/helper/status";
+import { WalletCards } from "lucide-react";
+import dynamic from "next/dynamic";
+import DataTableLoader from "@/components/loader/DataTableLoader";
+import { NoItemLoader } from "@/components/loader/ItemLoader";
+const NoItem = dynamic(() => import("@/components/not-found/NoItem"), {
+	ssr: true,
+	loading: () => <NoItemLoader />,
+});
+const DataTable = dynamic(() => import("@/components/table/DataTable"), {
+	ssr: true,
+	loading: () => <DataTableLoader />,
+});
 const page = () => {
 	const {
 		data: paymentResponse,

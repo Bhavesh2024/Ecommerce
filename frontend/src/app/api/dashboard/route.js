@@ -23,7 +23,6 @@ export async function GET(req, { params }) {
 				amount: true, // Replace with your actual payment field name
 			},
 		});
-		console.log(totalPayment);
 		const dashboardData = {
 			count: {
 				user: userCount,
@@ -40,7 +39,6 @@ export async function GET(req, { params }) {
 			dashboard: dashboardData,
 		});
 	} catch (err) {
-		console.log(err.message);
 		return NextResponse.json(
 			{ message: "Internal Server Error", error: err.message },
 			{ status: 500 },

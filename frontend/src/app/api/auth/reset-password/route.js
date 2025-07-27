@@ -41,7 +41,6 @@ export async function PUT(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.log(err);
 		return NextResponse.json(
 			{ message: "Internal Server Error" },
 			{ status: 500 },
