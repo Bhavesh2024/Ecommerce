@@ -108,12 +108,12 @@ export const generateOrderSummaryHTML = (order, productName = "") => {
 	return summaryHTML;
 };
 
-export const generateOptimizedUrl = (url) => {
+export const generateOptimizedUrl = (url, width = "w_400") => {
 	if (!url) return "";
 	if (url.includes("res.cloudinary.com")) {
 		// Automatically optimize with quality and format
 		const hasParams = url.includes("?");
-		return `${url}${hasParams ? "&" : "?"}q_auto,f_auto,w_600`;
+		return `${url}${hasParams ? "&" : "?"}q_auto,f_auto,${width}`;
 	}
 	return url;
 };

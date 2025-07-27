@@ -93,10 +93,10 @@ export async function PUT(req) {
 				);
 			}
 		}
-
+		console.log(image);
 		// If old image is Cloudinary and different from new image, delete it
 		if (
-			image !== null &&
+			isExistUser.image !== null &&
 			isCloudinaryProfileImage(isExistUser.image) &&
 			isExistUser.image !== image
 		) {

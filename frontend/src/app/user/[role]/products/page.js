@@ -23,6 +23,7 @@ import dynamic from "next/dynamic";
 import DataTableLoader from "@/components/loader/DataTableLoader";
 import { NoItemLoader } from "@/components/loader/ItemLoader";
 import { categories } from "@/utils/helper/category";
+import { generateOptimizedUrl } from "@/utils/helper/generator";
 const DataTable = dynamic(() => import("@/components/table/DataTable"), {
 	ssr: true,
 	loading: () => <DataTableLoader />,
@@ -93,6 +94,7 @@ const page = () => {
 	// 	setOpenProductForm(true);
 	// };
 	const [alert, setAlert] = useState(false);
+	const [isLoadedProduct, setIsLoadedProduct] = useState(true);
 	const productDataCol = [
 		{
 			key: "id",
@@ -108,8 +110,9 @@ const page = () => {
 			name: "Image",
 			render: (value) => (
 				<img
-					src={value}
+					src={generateOptimizedUrl(value, "w_100")}
 					alt={value}
+					loading='lazy'
 					className='size-10 rounded-md mix-blend-multiply'
 				/>
 			),
@@ -187,6 +190,7 @@ const page = () => {
 		if (isSuccess && responseProducts) {
 			const { products } = responseProducts;
 			addAllItem("products", products);
+			setIsLoadedProduct(false);
 			// products.map((product) => addItem(product));
 		}
 	}, [isSuccess, responseProducts]);
@@ -220,18 +224,30 @@ const page = () => {
 				{/* Product Table*/}
 				<div className='w-full'>
 					{isLoading && <DataTableLoader />}
-					{(isError ||
-						(isSuccess &&
-							products &&
-							products.length <= 0)) && (
-						<NoItem
-							message={"No Products Found"}
-							icon={
-								<Package className='size-16 text-purple-500' />
-							}
-						/>
-					)}
+					{!isLoading &&
+						isError &&
+						products.length === 0 && (
+							<NoItem
+								message={
+									"Failed to load products. Please try again."
+								}
+								icon={
+									<Package className='size-16 text-red-500' />
+								}
+							/>
+						)}
 
+					{!isLoadedProduct &&
+						isSuccess &&
+						products &&
+						products.length <= 0 && (
+							<NoItem
+								message={"No Products Found"}
+								icon={
+									<Package className='size-16 text-purple-500' />
+								}
+							/>
+						)}
 					{isSuccess && products && products.length > 0 && (
 						<DataTable
 							data={productDataCol}

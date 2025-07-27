@@ -34,7 +34,7 @@ const ProductImageGallery = ({ images = [], thumbnail, name }) => {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.3 }}
-						className='absolute inset-0'>
+						className='absolute inset-0 rounded'>
 						<Image
 							src={generateOptimizedUrl(
 								currentImage,
@@ -42,7 +42,7 @@ const ProductImageGallery = ({ images = [], thumbnail, name }) => {
 							alt={name}
 							fill
 							sizes='(max-width: 768px) 100vw, 600px'
-							className='object-contain p-4'
+							className='object-cover rounded rounded-b-none'
 						/>
 					</motion.div>
 				</AnimatePresence>

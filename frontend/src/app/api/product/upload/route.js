@@ -49,6 +49,7 @@ export async function POST(request) {
 		const form = formidable({
 			multiples: true,
 			keepExtensions: true,
+			maxFileSize: 15 * 1024 * 1024,
 		});
 
 		const nodeRequest = streamToNodeReadable(request.body);

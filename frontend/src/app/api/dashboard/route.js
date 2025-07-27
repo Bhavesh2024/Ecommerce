@@ -29,9 +29,10 @@ export async function GET(req, { params }) {
 				product: productCount,
 				order: orderCount,
 				revenue:
-					totalPayment._sum.amount -
-					totalRefunds._sum.amount,
-				refunds: totalRefunds._sum.amount,
+					(totalPayment._sum.amount -
+						totalRefunds._sum.amount) /
+					100,
+				refunds: totalRefunds._sum.amount / 100,
 			},
 		};
 		return NextResponse.json({

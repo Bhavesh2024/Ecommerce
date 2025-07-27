@@ -14,13 +14,11 @@ const prisma = new PrismaClient();
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export async function PUT(req) {
-	const step = (msg) => `[Order Update] ${msg}`;
-
 	try {
 		const data = await req.json();
 		const { id, orderStatus, paymentStatus } = data;
 		const { value: token } = await cookies().get("upsquareToken");
-		token;
+
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Token Not Found" },
@@ -51,7 +49,6 @@ export async function PUT(req) {
 				},
 			});
 		}
-		step(`Received update request for Order ID: ${id}`);
 
 		const razorpay = new Razorpay({
 			key_id: process.env.NEXT_PUBLIC_RAZORPAY_API_KEY,
@@ -63,7 +60,6 @@ export async function PUT(req) {
 			include: { user: true, product: true, payments: true },
 		});
 		if (!order) {
-			step(`Order not found`);
 			return NextResponse.json(
 				{ message: "Order not found" },
 				{ status: 404 },
@@ -87,8 +83,6 @@ export async function PUT(req) {
 				const eligibleForRefund = daysSinceOrder <= 2;
 
 				if (eligibleForRefund) {
-					step(`Eligible for refund, initiating refund`);
-
 					const paymentDetails =
 						await razorpay.payments.fetch(
 							payment.paymentId,
@@ -156,7 +150,6 @@ export async function PUT(req) {
 					]);
 
 					if (adminUser?.deviceToken) {
-						step(`Sending push notification to admin`);
 						await admin.messaging().send({
 							token: adminUser.deviceToken,
 							notification: {
@@ -177,12 +170,8 @@ export async function PUT(req) {
 						time: format(today, "dd MMM yyyy hh:mm a"),
 					};
 				} else {
-					step(
-						`Refund window expired, cancelling without refund`,
-					);
 				}
 			} else {
-				step(`No payment record found for refund`);
 			}
 		}
 
@@ -194,7 +183,6 @@ export async function PUT(req) {
 				...(paymentStatus !== undefined && { paymentStatus }),
 			},
 		});
-		step(`Order status updated successfully`);
 
 		// Prepare refund block (only if orderStatus === 4)
 		let refundBlock = "";
@@ -213,7 +201,9 @@ export async function PUT(req) {
 					</tr>
 					<tr>
 						<td style="font-weight: bold; border: 1px solid #ccc;">Amount:</td>
-						<td style="border: 1px solid #ccc;">${formatPrice(refundDetails.amount)}</td>
+						<td style="border: 1px solid #ccc;">${formatPrice(
+							refundDetails.amount / 100,
+						)}</td>
 					</tr>
 					<tr>
 						<td style="font-weight: bold; border: 1px solid #ccc;">Refund Time:</td>
@@ -313,8 +303,6 @@ export async function PUT(req) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error(`[Error] ${err.message}`);
-
 		return NextResponse.json(
 			{
 				message:
