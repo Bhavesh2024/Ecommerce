@@ -68,7 +68,7 @@ const ProductCard = ({ product, showViewMore = true }) => {
 						<a
 							href={`/product/${product.slug}/checkout`}
 							onClick={(e) => e.stopPropagation()}
-							className='flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-bold rounded-xl bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 active:translate-y-0'>
+							className='flex-1 flex items-center text-nowrap justify-center gap-2 py-3 px-4 text-sm font-bold rounded-xl bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 active:translate-y-0'>
 							<ShoppingCart className='h-5 w-5' />
 							<span>BUY NOW</span>
 						</a>

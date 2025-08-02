@@ -14,27 +14,25 @@ export async function GET(req, { params }) {
 			_sum: {
 				amount: true,
 			},
-			where: {
-				status: 2,
-			},
 		});
 		const totalRefunds = await prisma.refund.aggregate({
 			_sum: {
 				amount: true, // Replace with your actual payment field name
 			},
 		});
+		const paymentAmount = totalPayment._sum.amount ?? 0;
+		const refundAmount = totalRefunds._sum.amount ?? 0;
+
 		const dashboardData = {
 			count: {
 				user: userCount,
 				product: productCount,
 				order: orderCount,
-				revenue:
-					(totalPayment._sum.amount -
-						totalRefunds._sum.amount) /
-					100,
-				refunds: totalRefunds._sum.amount / 100,
+				revenue: (paymentAmount - refundAmount) / 100,
+				refunds: refundAmount / 100,
 			},
 		};
+
 		return NextResponse.json({
 			message: "Data Get Successfully",
 			dashboard: dashboardData,
