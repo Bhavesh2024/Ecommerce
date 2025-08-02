@@ -8,6 +8,7 @@ import {
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FooterLoader } from "@/components/loader/LayoutLoader";
+import { Analytics } from "@vercel/analytics/next";
 const Footer = dynamic(() => import("@/layout/footer/Footer"), {
 	loading: () => <FooterLoader />,
 	ssr: false,
@@ -47,7 +48,7 @@ export default function RootLayout({ children }) {
 				<QueryClientProviderWrapper client={queryClient}>
 					{children}
 				</QueryClientProviderWrapper>
-
+				<Analytics />
 				{/* Show Footer only when needed */}
 				{!hideFooter && <Footer />}
 			</body>
