@@ -123,11 +123,11 @@ const ContactPage = () => {
 											type='text'
 											name='name'
 											placeholder='Your Name'
-											className={`w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 ${
+											className={`w-full p-3 border rounded-md  focus:ring-1  ${
 												errors.name &&
 												touched.name
-													? "border-red-500"
-													: "border-gray-300 focus:border-purple-500"
+													? "border-red-500 focus:ring-red-500 focus:outline-red-500"
+													: "border-gray-300 focus:outline-purple-500 focus:ring-purple-500"
 											}`}
 										/>
 										<ErrorMessage
@@ -143,11 +143,11 @@ const ContactPage = () => {
 											type='email'
 											name='email'
 											placeholder='Your Email'
-											className={`w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 ${
+											className={`w-full p-3 border rounded-md  focus:ring-1  ${
 												errors.email &&
 												touched.email
-													? "border-red-500"
-													: "border-gray-300 focus:border-purple-500"
+													? "border-red-500 focus:ring-red-500 focus:outline-red-500"
+													: "border-gray-300 focus:outline-purple-500 focus:ring-purple-500"
 											}`}
 										/>
 										<ErrorMessage
@@ -164,11 +164,11 @@ const ContactPage = () => {
 											name='message'
 											placeholder='Your Message'
 											rows='4'
-											className={`w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 ${
+											className={`w-full p-3 border rounded-md  focus:ring-1  ${
 												errors.message &&
 												touched.message
-													? "border-red-500"
-													: "border-gray-300 focus:border-purple-500"
+													? "border-red-500 focus:ring-red-500 focus:outline-red-500"
+													: "border-gray-300 focus:outline-purple-500 focus:ring-purple-500"
 											}`}
 										/>
 										<ErrorMessage

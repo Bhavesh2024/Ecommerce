@@ -23,6 +23,10 @@ export async function POST(req) {
 				{ status: 404 },
 			);
 		}
+		let isResend = false;
+		if (user.otp) {
+			isResend = true;
+		}
 		let otp;
 		let isUnique = false;
 
@@ -53,6 +57,7 @@ export async function POST(req) {
 				verificationCode: otp,
 			},
 		};
+
 		const { error } = await sendMail(mailPayload);
 		if (error) {
 			return NextResponse.json(
@@ -63,7 +68,11 @@ export async function POST(req) {
 			);
 		}
 		return NextResponse.json(
-			{ message: "Verification Code Sent Successfully" },
+			{
+				message: isResend
+					? "Verification Code Resend Successfully"
+					: "Verification Code Sent Successfully",
+			},
 			{ status: 200 },
 		);
 	} catch (err) {

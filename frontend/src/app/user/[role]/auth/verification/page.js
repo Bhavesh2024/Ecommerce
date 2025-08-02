@@ -47,7 +47,7 @@ const UserVerification = () => {
 
 	return (
 		<>
-			<div className='fixed w-full top-0 start-0'>
+			<div className='fixed w-full top-0 start-0 z-50'>
 				<ProductNav />
 			</div>
 
@@ -91,6 +91,10 @@ const UserVerification = () => {
 									...values,
 									role: role,
 								};
+								localStorage.setItem(
+									"tempEmail",
+									values.email,
+								);
 								mutate({
 									method: "post",
 									type: "verification",

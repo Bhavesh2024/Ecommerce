@@ -17,7 +17,7 @@ const CodeVerification = () => {
 	const [otp, setOtp] = useState(new Array(6).fill(""));
 	const [token, setToken] = useState(null);
 	const inputsRef = useRef([]);
-	const { message, showError, showSuccess, isOpen, type } =
+	const { message, showError, showSuccess, isOpen, type, closePopup } =
 		usePopupMessage();
 	const router = useRouter();
 	const { role } = useParams();
@@ -25,9 +25,17 @@ const CodeVerification = () => {
 	const { mutate, isLoading } = useMutation({
 		mutationFn: handleAuth,
 		onSuccess: (data) => {
-			const { message, token } = data;
-			setToken(token);
-			showSuccess(message);
+			if (data && data?.newOTP) {
+				showSuccess(data.message);
+				setTimeout(() => {
+					closePopup();
+				}, 3000);
+			} else {
+				const { message, token } = data;
+				setToken(token);
+				localStorage.removeItem("tempEmail");
+				showSuccess(message);
+			}
 		},
 		onError: (err) => {
 			showError(err);
@@ -42,6 +50,7 @@ const CodeVerification = () => {
 						`/user/${role}/auth/forgot-password/${token}`,
 					);
 				}
+				closePopup();
 			}, 3000);
 			return () => clearTimeout(timer);
 		}
@@ -91,9 +100,15 @@ const CodeVerification = () => {
 		mutate({ method: "post", type: "otpVerification", data });
 	};
 
+	const resendOTP = () => {
+		const email = localStorage.getItem("tempEmail");
+		const data = { email, role };
+		mutate({ method: "post", type: "verification", data });
+	};
+
 	return (
 		<>
-			<div className='fixed w-full top-0 start-0'>
+			<div className='fixed w-full top-0 start-0 z-50'>
 				<ProductNav />
 			</div>
 
@@ -160,7 +175,14 @@ const CodeVerification = () => {
 									/>
 								))}
 							</div>
-
+							<div className='flex justify-end'>
+								<button
+									type='button'
+									onClick={resendOTP}
+									className='text-purple-700 text-sm'>
+									Resend OTP
+								</button>
+							</div>
 							<button
 								type='submit'
 								className='w-full bg-purple-700 text-white py-2 rounded hover:bg-purple-500 transition'

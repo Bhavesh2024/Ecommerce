@@ -72,10 +72,11 @@ export async function GET(req) {
 				{ status: 404 },
 			);
 		}
+		const activeProducts = allProducts.filter((p) => p.status);
 		return NextResponse.json(
 			{
 				message: "Products Found Successfully",
-				products: allProducts,
+				products: activeProducts,
 			},
 			{ status: 200 },
 		);

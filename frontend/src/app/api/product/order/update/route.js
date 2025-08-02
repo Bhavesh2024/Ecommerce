@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import Razorpay from "razorpay";
 import dayjs from "dayjs";
 import admin from "@/config/firebase/firebaseAdmin";
-import { refundStatus } from "@/utils/helper/status";
+import { razorpayStatus, refundStatus } from "@/utils/helper/status";
 import { notificationType } from "@/utils/helper/type";
 import { sendMail } from "@/utils/helper/sendMail";
 import { format } from "date-fns";
@@ -122,7 +122,7 @@ export async function PUT(req) {
 						}),
 						prisma.payment.update({
 							where: { id: payment.id },
-							data: { status: 2 },
+							data: { status: 4 },
 						}),
 						prisma.order.update({
 							where: { id },
@@ -169,9 +169,7 @@ export async function PUT(req) {
 						amount: refundResponse.amount,
 						time: format(today, "dd MMM yyyy hh:mm a"),
 					};
-				} else {
 				}
-			} else {
 			}
 		}
 
@@ -180,9 +178,22 @@ export async function PUT(req) {
 			where: { id },
 			data: {
 				orderStatus,
-				...(paymentStatus !== undefined && { paymentStatus }),
+				paymentStatus: isRefunded ? 2 : 3,
 			},
 		});
+
+		if (orderStatus === 4) {
+			await prisma.payment.update({
+				where: {
+					orderId: id,
+				},
+				data: {
+					status: isRefunded
+						? razorpayStatus["refunded"]
+						: razorpayStatus["notRefunded"],
+				},
+			});
+		}
 
 		// Prepare refund block (only if orderStatus === 4)
 		let refundBlock = "";

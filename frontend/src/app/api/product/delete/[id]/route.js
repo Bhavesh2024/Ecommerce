@@ -1,7 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+import {
+	isCloudinaryImage,
+	getPublicIdFromUrl,
+} from "@/utils/helper/cloudinary";
 
 const prisma = new PrismaClient();
+
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function DELETE(req, { params }) {
 	try {
@@ -25,6 +36,23 @@ export async function DELETE(req, { params }) {
 			);
 		}
 
+		const existingImages = isExist.images || [];
+
+		const removedUrls = existingImages
+			.filter((img) => isCloudinaryImage(img.url))
+			.map((img) => img.url);
+
+		for (const url of removedUrls) {
+			const publicId = getPublicIdFromUrl(url);
+			if (!publicId) continue;
+
+			try {
+				await cloudinary.uploader.destroy(publicId);
+			} catch (err) {
+				// Optional: log error if needed
+			}
+		}
+
 		await prisma.product.delete({
 			where: { id: parseInt(id) },
 		});
@@ -37,7 +65,6 @@ export async function DELETE(req, { params }) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error("Error:", err.message);
 		return NextResponse.json(
 			{ message: "Something went wrong", error: err.message },
 			{ status: 500 },

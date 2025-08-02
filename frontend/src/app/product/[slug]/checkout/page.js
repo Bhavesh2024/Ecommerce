@@ -61,7 +61,7 @@ const Page = () => {
 	if (isError || isAuthError || !isAuthSuccess) {
 		return (
 			<>
-				<div className='fixed top-0 left-0 w-full'>
+				<div className='fixed top-0 left-0 w-full z-50'>
 					<ProductNav />
 				</div>
 				<NotFound

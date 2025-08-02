@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const Sidebar = ({ sidebarHandler, role, userImage, logout }) => {
 	const path = usePathname();
 	const userActivities = renderUserActivities(role);
+	const isMobile = matchMedia("(max-width:768px)").matches;
 	return (
 		<>
 			<aside className='fixed lg:static md:flex flex-col gap-2 bg-slate-200 h-screen w-60 z-40 lg:w-1/5 overflow-auto shadow'>
@@ -49,6 +50,13 @@ const Sidebar = ({ sidebarHandler, role, userImage, logout }) => {
 												prefix +
 												link
 											}`}
+											onClick={() =>
+												isMobile
+													? sidebarHandler(
+															false,
+													  )
+													: ""
+											}
 											className='flex items-center gap-1  w-1/2 mx-auto '>
 											{icon}
 											{name}

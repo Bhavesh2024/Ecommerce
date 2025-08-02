@@ -77,7 +77,7 @@ const ResetPasswordPage = () => {
 			)}
 			{isVerified && (
 				<>
-					<div className='fixed w-full top-0 start-0'>
+					<div className='fixed w-full top-0 start-0 z-50'>
 						<ProductNav />
 					</div>
 

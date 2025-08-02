@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import {
+	isCloudinaryImage,
+	getPublicIdFromUrl,
+} from "@/utils/helper/cloudinary";
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,28 +13,6 @@ cloudinary.config({
 });
 
 const prisma = new PrismaClient();
-
-function isCloudinaryProductImage(url) {
-	return (
-		url.includes("res.cloudinary.com") &&
-		url.includes("/upload/") &&
-		url.includes("/products/")
-	);
-}
-
-function getPublicIdFromUrl(url) {
-	try {
-		const withoutExtension = url.substring(0, url.lastIndexOf("."));
-		const parts = withoutExtension.split("/upload/");
-		if (parts.length < 2) return null;
-
-		const afterUpload = parts[1];
-		const afterVersion = afterUpload.replace(/^v\d+\//, ""); // remove version number
-		return afterVersion;
-	} catch (err) {
-		return null;
-	}
-}
 
 export async function PUT(req) {
 	try {
@@ -55,27 +37,26 @@ export async function PUT(req) {
 			where: { id },
 		});
 
-		const oldImages = existingProduct.images || [];
+		if (!existingProduct) {
+			return NextResponse.json(
+				{ message: "Product not found" },
+				{ status: 404 },
+			);
+		}
 
+		const oldImages = existingProduct.images || [];
 		const oldUrls = oldImages.map((img) => img.url);
 		const newUrls = newImages.map((img) => img.url);
-
 		const removedUrls = oldUrls.filter((url) => !newUrls.includes(url));
 
 		for (const url of removedUrls) {
-			if (!isCloudinaryProductImage(url)) {
-				continue;
-			}
+			if (!isCloudinaryImage(url)) continue;
 
 			const publicId = getPublicIdFromUrl(url);
-			if (!publicId) {
-				continue;
-			}
+			if (!publicId) continue;
 
 			try {
-				const result = await cloudinary.uploader.destroy(
-					publicId,
-				);
+				await cloudinary.uploader.destroy(publicId);
 			} catch (err) {}
 		}
 
@@ -96,7 +77,6 @@ export async function PUT(req) {
 			}
 		}
 
-		// Update product
 		await prisma.product.update({
 			where: { id },
 			data: {
@@ -116,7 +96,6 @@ export async function PUT(req) {
 			},
 		});
 
-		// Return success response
 		return NextResponse.json(
 			{
 				message: "Product Updated Successfully",

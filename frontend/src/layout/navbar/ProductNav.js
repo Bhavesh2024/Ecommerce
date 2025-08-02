@@ -7,7 +7,7 @@ const ProductNav = () => {
 	const router = useRouter();
 
 	return (
-		<div className='w-full  px-5 md:px-10 min-h-[70px]  flex items-center justify-between gap-2 bg-slate-200 text-neutral-800 shadow-lg z-[50]'>
+		<div className='w-full  px-5 md:px-10 min-h-[70px]  flex items-center justify-between gap-2 bg-slate-200 text-neutral-800 shadow-lg z-50'>
 			<button
 				onClick={() => router.back()}
 				className='flex items-center  hover:underline'>

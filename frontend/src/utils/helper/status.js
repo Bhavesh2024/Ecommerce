@@ -49,6 +49,12 @@ export const paymentStatuses = [
 		bg: "bg-red-100",
 		text: "text-red-700",
 	},
+	{
+		label: "Not Refund",
+		value: 3,
+		bg: "bg-gray-100",
+		text: "text-gray-700",
+	},
 ];
 
 export const razorpayStatus = {
@@ -59,6 +65,7 @@ export const razorpayStatus = {
 	refunded: 4, // Payment refunded (partial or full)
 	failed: 5, // Payment attempt failed
 	cancelled: 6, // Payment was cancelled or expired
+	notRefunded: 7,
 };
 
 export const refundStatus = {

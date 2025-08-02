@@ -1,5 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+import {
+	getPublicIdFromUrl,
+	isCloudinaryImage,
+} from "@/utils/helper/cloudinary";
+
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const prisma = new PrismaClient();
 
@@ -25,6 +36,15 @@ export async function DELETE(req, { params }) {
 			);
 		}
 
+		const profileImage = isExist?.image;
+
+		if (profileImage && isCloudinaryImage(profileImage)) {
+			const publicId = getPublicIdFromUrl(profileImage);
+			if (publicId) {
+				await cloudinary.uploader.destroy(publicId);
+			}
+		}
+
 		await prisma.user.delete({
 			where: { id: parseInt(id) },
 		});
@@ -37,7 +57,6 @@ export async function DELETE(req, { params }) {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error("Error:", err.message);
 		return NextResponse.json(
 			{ message: "Something went wrong", error: err.message },
 			{ status: 500 },

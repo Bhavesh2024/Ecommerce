@@ -51,7 +51,7 @@ const LoginPage = () => {
 
 	return (
 		<>
-			<div className='fixed w-full top-0 start-0'>
+			<div className='fixed w-full top-0 start-0 z-50'>
 				<ProductNav />
 			</div>
 			<div className='min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-3 w-full bg-purple-50'>

@@ -553,7 +553,21 @@ const CheckoutForm = ({ product, user = null }) => {
 									{/* Purchase Notes */}
 									<OrderStep />
 								</div>
-
+								<div className='flex gap-2 items-start border border-yellow-200 bg-yellow-50 rounded-lg px-4 py-3 text-sm text-yellow-700 shadow-sm'>
+									<p>
+										<span className='font-semibold'>
+											Note:
+										</span>{" "}
+										<span>
+											This order is
+											no longer
+											refundable as
+											it was placed
+											more than 2
+											days ago.
+										</span>
+									</p>
+								</div>
 								{/* Submit Button */}
 								<div className='text-center pt-2'>
 									<input

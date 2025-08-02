@@ -25,7 +25,7 @@ const Alert = dynamic(() => import("../modal/alert/Alert"), {
 });
 const OrderSummary = ({
 	order,
-	closePopup,
+	closeModal,
 	hideClose = true,
 	role = "user",
 }) => {
@@ -63,6 +63,9 @@ const OrderSummary = ({
 		mutationFn: handleOrder,
 		onSuccess: (response) => {
 			showSuccess(response.message);
+			if (!hideClose) {
+				closeModal();
+			}
 		},
 		onError: (error) => {
 			showError(error);
@@ -137,7 +140,7 @@ const OrderSummary = ({
 			{!hideClose && (
 				<X
 					className='size-5 text-slate-500 absolute top-4 end-4 md:hidden cursor-pointer hover:text-red-500'
-					onClick={closePopup}
+					onClick={closeModal}
 				/>
 			)}
 

@@ -13,6 +13,7 @@ import { Eye, EyeOff } from "lucide-react";
 import dynamic from "next/dynamic";
 import MessageLoader from "@/components/loader/MessageLoader";
 import Image from "next/image";
+import dayjs from "dayjs";
 const Message = dynamic(() => import("@/components/popup/Message"), {
 	ssr: false,
 	loading: () => <MessageLoader />,
@@ -21,7 +22,12 @@ const Message = dynamic(() => import("@/components/popup/Message"), {
 // Yup validation schema
 const SignupSchema = Yup.object().shape({
 	name: Yup.string().required("Name is required"),
-	birthDate: Yup.date().required("Birth date is required"),
+	birthDate: Yup.date()
+		.max(
+			dayjs().subtract(18, "years").toDate(),
+			"You must be 18 or older",
+		)
+		.required("Birth date is required"),
 	gender: Yup.string().required("Gender is required"),
 	contact: Yup.string()
 		.matches(/^[0-9]{10}$/, "Must be a valid 10-digit phone number")

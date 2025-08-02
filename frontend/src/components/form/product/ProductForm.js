@@ -40,8 +40,8 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 		prices: data ? data.prices : [],
 		extras: data ? data.extras : [],
 		images: data ? data.images : [],
-		discount: data ? data.discount : "",
-		stockCount: data ? data.stockCount : "",
+		discount: data ? data.discount : 0,
+		stockCount: data ? data.stockCount : 0,
 		stockStatus: data ? data.stockStatus : 0,
 		slug: data ? data.slug : "",
 		status: data ? data.status : false,
@@ -88,20 +88,17 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 						label: Yup.string().required(),
 						value: Yup.number()
 							.typeError("Must be a number")
-							.required("Required"),
+							.required("Price is Required"),
 					}),
 				),
 			}),
 		),
-		images: Yup.array()
-			.min(1, "At least one image is required")
-			.max(5, "No more than 5 images allowed"),
 		extras: Yup.array().of(
 			Yup.object({
 				name: Yup.string().required("Required"),
 				price: Yup.number()
 					.typeError("Must be a number")
-					.required("Required"),
+					.required("Price is Required"),
 			}),
 		),
 		discount: Yup.number()
@@ -110,8 +107,9 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 			.max(100),
 		stockCount: Yup.number()
 			.typeError("Must be a number")
-			.required("Required"),
-		stockStatus: Yup.number().required("Required"),
+			.min(0)
+			.required("Stock is Required"),
+		stockStatus: Yup.number().required("Stock Status is Required"),
 	});
 
 	const generateSlug = (title) => {
@@ -213,10 +211,14 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 				initialValues={initialValues}
 				validationSchema={validationSchema}
 				enableReinitialize={true}
-				validateOnBlur={true}
+				validateOnBlur={false}
 				validateOnMount={false}
 				validateOnChange={true}
 				onSubmit={(values) => {
+					if (values.images.length == 0) {
+						showError("No Image has been uploaded");
+						return;
+					}
 					values.slug = generateSlug(values.title);
 					const skus = generateSKUs(
 						values.slug,
@@ -586,7 +588,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 												name='title'
 												id='title'
 												placeholder='Enter product name'
-												className='border border-slate-300 px-3 py-2 rounded-md w-full focus:ring-1 focus:ring-purple-500 focus:border-purple-500'
+												className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+													errors.title
+														? "border-red-500  focus:ring-red-500 focus:outline-red-500"
+														: "border-slate-300 focus:ring-purple-500 focus:outline-purple-500"
+												}`}
 											/>
 											{errors.title &&
 												touched.title && (
@@ -609,7 +615,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 													as='select'
 													name='category'
 													id='category'
-													className='border border-slate-300 px-3 py-2 rounded-md w-full focus:ring-1 focus:ring-purple-500 focus:border-purple-500 appearance-none'>
+													className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+														errors.category
+															? "border-red-500  focus:ring-red-500 focus:outline-red-500"
+															: "border-slate-300 focus:ring-purple-500 focus:outline-purple-500"
+													}`}>
 													<option value=''>
 														Select
 														a
@@ -636,7 +646,7 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 														),
 													)}
 												</Field>
-												<ChevronDown className='absolute right-3 top-2.5 h-4 w-4 text-slate-400' />
+												{/* <ChevronDown className='absolute right-3 top-2.5 h-4 w-4 text-slate-400' /> */}
 											</div>
 											{errors.category &&
 												touched.category && (
@@ -662,7 +672,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 													name='defaultPrice'
 													id='defaultPrice'
 													placeholder='0.00'
-													className='border border-slate-300 px-3 py-2 pl-8 rounded-md w-full focus:ring-1 focus:ring-purple-500 focus:border-purple-500'
+													className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+														errors.defaultPrice
+															? "border-red-500 pl-8  focus:ring-red-500 focus:outline-red-500"
+															: "border-slate-300 focus:ring-purple-500  pl-8  focus:outline-purple-500"
+													}`}
 												/>
 											</div>
 											{errors.defaultPrice &&
@@ -687,8 +701,20 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 												id='discount'
 												type='number'
 												placeholder='0'
-												className='border border-slate-300 px-3 py-2 rounded-md w-full focus:ring-1 focus:ring-purple-500 focus:border-purple-500'
+												className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+													errors.discount
+														? "border-red-500  focus:ring-red-500 focus:outline-red-500"
+														: "border-slate-300 focus:ring-purple-500 focus:outline-purple-500"
+												}`}
 											/>
+											{errors.discount &&
+												touched.discount && (
+													<p className='text-red-500 text-xs'>
+														{
+															errors.discount
+														}
+													</p>
+												)}
 										</div>
 
 										<div className='space-y-1'>
@@ -703,7 +729,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 												id='stockCount'
 												type='number'
 												placeholder='0'
-												className='border border-slate-300 px-3 py-2 rounded-md w-full focus:ring-1 focus:ring-purple-500 focus:border-purple-500'
+												className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+													errors.stockCount
+														? "border-red-500  focus:ring-red-500 focus:outline-red-500"
+														: "border-slate-300 focus:ring-purple-500 focus:outline-purple-500"
+												}`}
 											/>
 											{errors.stockCount &&
 												touched.stockCount && (
@@ -778,7 +808,11 @@ const ProductForm = ({ action = "add", data = null, onClose }) => {
 												}}
 												max='300'
 												placeholder='Write product description here...'
-												className='border text-sm border-slate-300 px-3 py-2 rounded-md w-full h-32 focus:ring-1 focus:ring-purple-500 focus:border-purple-500'
+												className={`border  px-3 py-2 rounded-md w-full focus:ring-1  ${
+													errors.description
+														? "border-red-500  focus:ring-red-500 focus:outline-red-500"
+														: "border-slate-300 focus:ring-purple-500 focus:outline-purple-500"
+												}`}
 											/>
 											<span className='absolute bottom-2 right-2 text-xs text-slate-500 bg-white/80 px-2 py-0.5 rounded'>
 												{

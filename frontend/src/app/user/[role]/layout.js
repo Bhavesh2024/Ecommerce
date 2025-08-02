@@ -21,7 +21,7 @@ const UserLayout = ({ children }) => {
 	const router = useRouter();
 	const path = usePathname();
 	const { role } = useParams();
-
+	const isMobile = matchMedia("(max-width:768px)").matches;
 	const layoutRestrictedRoutesList = [
 		`/user/${role}/auth/signup`,
 		`/user/${role}/auth/login`,
@@ -147,7 +147,12 @@ const UserLayout = ({ children }) => {
 									sidebar
 										? "w-10/12 end-0"
 										: "w-full"
-								} bg-slate-200 text-slate-900 fixed top-0 shadow-lg  z-30`}>
+								} bg-slate-200 text-slate-900 fixed top-0 shadow-lg  z-30`}
+								onClick={() =>
+									isMobile && sidebar
+										? setSidebar(false)
+										: ""
+								}>
 								<AdminNav
 									userImage={user?.image}
 									sidebar={sidebar}
@@ -158,7 +163,13 @@ const UserLayout = ({ children }) => {
 									role={role}
 								/>
 							</header>
-							<div className='flex mt-20 h-full w-full '>
+							<div
+								className='flex mt-20 h-full w-full'
+								onClick={() =>
+									isMobile
+										? setSidebar(false)
+										: ""
+								}>
 								{children}
 							</div>
 						</section>

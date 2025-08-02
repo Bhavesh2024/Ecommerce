@@ -153,7 +153,8 @@ const Page = () => {
 					<PageLoader />
 				</div>
 			)}
-			{isError && !isLoading && <NotFound />}
+			{isError ||
+				(!isLoading && isSuccess && !product && <NotFound />)}
 			{isSuccess && product && (
 				<div className='bg-gray-50 min-h-screen'>
 					<ProductNav />
@@ -593,7 +594,7 @@ const Page = () => {
 							type={"error"}
 							message={messageContent.message}
 							onClose={() => setShowMessage(false)}
-							position='fixed top-20 start-2/5 !w-1/4'
+							position='fixed flex top-20 mx-10 md:start-1/5 lg:start-2/5 px-4 !w-4/5 md:!w-2/4 lg:!w-1/4'
 						/>
 					)}
 				</div>

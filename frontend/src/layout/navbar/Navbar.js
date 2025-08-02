@@ -159,12 +159,9 @@ const Navbar = () => {
 										className='size-10 rounded-full object-fill'
 									/>
 								) : (
-									<img
-										src={
-											defaultImageUrl
-										}
-										className='size-8 rounded-full object-fill'
-									/>
+									<div className='w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center'>
+										<User className='w-5 h-5 text-purple-600' />
+									</div>
 								)}
 							</button>
 							{userMenuOpen && (

@@ -43,7 +43,9 @@ const OrderCard = ({ order, isSelected = false, activate, index }) => {
 
 	const payment = getStatus(paymentStatuses, paymentStatus);
 	const orderLabel = getStatus(orderStatuses, orderStatus);
-
+	const handleClose = () => {
+		setOpen(false);
+	};
 	return (
 		<div
 			className={`w-full bg-purple-50 hover:bg-purple-50 ${
@@ -103,11 +105,11 @@ const OrderCard = ({ order, isSelected = false, activate, index }) => {
 			{/* Modal for mobile */}
 			<Modal
 				open={open}
-				onClose={() => setOpen(false)}>
+				onClose={handleClose}>
 				<div className='w-screen relative'>
 					<OrderSummary
 						order={order}
-						closePopup={() => setOpen(false)}
+						closeModal={handleClose}
 						hideClose={false}
 					/>
 				</div>
